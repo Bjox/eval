@@ -1,6 +1,6 @@
 ﻿namespace Eval.Core.Selection.Parent
 {
-    public enum ParentSelection
+    public enum ParentSelectionType
     {
         Tournament,
         SigmaScaling,

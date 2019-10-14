@@ -10,9 +10,9 @@ namespace Eval.Core
         int PopulationSize { get; }
         double OverproductionFactor { get; }
         int MaximumGenerations { get; }
-        Crossover Crossover { get; }
-        AdultSelection AdultSelection { get; }
-        ParentSelection ParentSelection { get; }
+        CrossoverType CrossoverType { get; }
+        AdultSelectionType AdultSelectionType { get; }
+        ParentSelectionType ParentSelectionType { get; }
         double CrossoverRate { get; }
         double MutationRate { get; }
         int TournamentSize { get; }

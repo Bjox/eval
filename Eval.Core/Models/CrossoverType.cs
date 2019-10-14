@@ -1,6 +1,6 @@
 ﻿namespace Eval.Core.Models
 {
-    public enum Crossover
+    public enum CrossoverType
     {
         OnePoint,
         Uniform

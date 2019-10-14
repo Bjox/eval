@@ -1,6 +1,6 @@
 ﻿namespace Eval.Core.Selection.Adult
 {
-    public enum AdultSelection
+    public enum AdultSelectionType
     {
         GenerationalReplacement,
         GenerationalMixing,
