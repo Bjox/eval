@@ -177,25 +177,140 @@ namespace Eval.Test.Unit.Models
         }
 
 
+        private class Dummy : IPhenotype
+        {
+            public bool IsEvaluated => throw new NotImplementedException();
+
+            public IGenotype Genotype => throw new NotImplementedException();
+
+            public double Fitness => throw new NotImplementedException();
+
+            public double Evaluate()
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         [TestMethod]
         public void ClearWithOneEliteShouldLeavePhenotypeWithMaxFitness()
         {
-            var popsize = 5;
+            var popsize = 3;
             population = new Population(popsize);
-            population.Add(new Mock<IPhenotype>().Setup(x => x.Evaluate => 1.0));
+
+            var m0 = new Mock<IPhenotype>();
+            m0.SetupGet(p => p.Fitness).Returns(1.0);
+            population.Add(m0.Object);
+
+            var m1 = new Mock<IPhenotype>();
+            m1.Setup(p => p.Fitness).Returns(0.8);
+            population.Add(m1.Object);
+
+            var m2 = new Mock<IPhenotype>();
+            m2.Setup(p => p.Fitness).Returns(0.6);
+            population.Add(m2.Object);
+
+            population.Evaluate(true, null);
             population.Clear(1, EAMode.MaximizeFitness);
 
             for (int i = 1; i < population.Size; i++)
             {
                 Assert.IsNull(population[i]);
             }
-            Assert.
+            population[0].Fitness.Should().Be(1.0);
+        }
+
+        [TestMethod]
+        public void ClearWithOneEliteShouldLeavePhenotypeWithMinFitness()
+        {
+            var popsize = 3;
+            population = new Population(popsize);
+
+            var m0 = new Mock<IPhenotype>();
+            m0.SetupGet(p => p.Fitness).Returns(1.0);
+            population.Add(m0.Object);
+
+            var m1 = new Mock<IPhenotype>();
+            m1.Setup(p => p.Fitness).Returns(0.8);
+            population.Add(m1.Object);
+
+            var m2 = new Mock<IPhenotype>();
+            m2.Setup(p => p.Fitness).Returns(0.6);
+            population.Add(m2.Object);
+
+            population.Evaluate(true, null);
+            population.Clear(1, EAMode.MinimizeFitness);
+
+            for (int i = 1; i < population.Size; i++)
+            {
+                Assert.IsNull(population[i]);
+            }
+            population[0].Fitness.Should().Be(0.6);
         }
 
         [TestMethod]
         public void ClearWithMultipleElitesShouldLeavePhenotypesWithMaxFitness()
         {
-            
+            var popsize = 4;
+            population = new Population(popsize);
+
+            var m0 = new Mock<IPhenotype>();
+            m0.SetupGet(p => p.Fitness).Returns(1.0);
+            population.Add(m0.Object);
+
+            var m1 = new Mock<IPhenotype>();
+            m1.Setup(p => p.Fitness).Returns(0.8);
+            population.Add(m1.Object);
+
+            var m2 = new Mock<IPhenotype>();
+            m2.Setup(p => p.Fitness).Returns(0.6);
+            population.Add(m2.Object);
+
+            var m3 = new Mock<IPhenotype>();
+            m3.Setup(p => p.Fitness).Returns(0.4);
+            population.Add(m3.Object);
+
+            population.Evaluate(true, null);
+            population.Clear(2, EAMode.MaximizeFitness);
+
+            for (int i = 2; i < population.Size; i++)
+            {
+                Assert.IsNull(population[i]);
+            }
+            population[0].Fitness.Should().Be(1.0);
+            population[1].Fitness.Should().Be(0.8);
+        }
+
+        [TestMethod]
+        public void ClearWithMultipleElitesShouldLeavePhenotypesWithMinFitness()
+        {
+            var popsize = 4;
+            population = new Population(popsize);
+
+            var m0 = new Mock<IPhenotype>();
+            m0.SetupGet(p => p.Fitness).Returns(1.0);
+            population.Add(m0.Object);
+
+            var m1 = new Mock<IPhenotype>();
+            m1.Setup(p => p.Fitness).Returns(0.8);
+            population.Add(m1.Object);
+
+            var m2 = new Mock<IPhenotype>();
+            m2.Setup(p => p.Fitness).Returns(0.6);
+            population.Add(m2.Object);
+
+            var m3 = new Mock<IPhenotype>();
+            m3.Setup(p => p.Fitness).Returns(0.4);
+            population.Add(m3.Object);
+
+            population.Evaluate(true, null);
+            population.Clear(2, EAMode.MinimizeFitness);
+
+            for (int i = 2; i < population.Size; i++)
+            {
+                Assert.IsNull(population[i]);
+            }
+            population[0].Fitness.Should().Be(0.4);
+            population[1].Fitness.Should().Be(0.6);
         }
     }
 

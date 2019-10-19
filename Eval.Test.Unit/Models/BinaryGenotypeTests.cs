@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Eval.Core.Models;
 using Eval.Core.Util.EARandom;
 using FluentAssertions;
@@ -83,6 +85,20 @@ namespace Eval.Test.Unit.Models
             g.Mutate(0.0, new DefaultRandomNumberGenerator("this is sed".GetHashCode()));
 
             g.Should().AllBeEquivalentTo(false);
+        }
+
+        [TestMethod]
+        public void MutateShouldFlipBitsProportionalToProbability()
+        {
+            var probabilities = new[] { 0.01, 0.1, 0.3, 0.5, 0.7, 0.99 };
+            var n = 100000;
+
+            foreach (var prob in probabilities)
+            {
+                var g = new BinaryGenotype(new BitArray(n, false));
+                g.Mutate(prob, new DefaultRandomNumberGenerator("this is sed".GetHashCode()));
+                (g.Count(b => b == true) / (double)n).Should().BeApproximately(prob, prob * 0.05); // 5% allowed delta
+            }
         }
     }
 }

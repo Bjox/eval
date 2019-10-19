@@ -7,7 +7,7 @@ using Eval.Core.Util.EARandom;
 namespace Eval.Core.Util.Roulette
 {
     [Serializable()]
-    public class Roulette<T>
+    public class Roulette<T> : IRoulette<T>
     {
         private readonly IRandomNumberGenerator _rng;
         private readonly List<Entry<T>> _entries;
@@ -23,6 +23,18 @@ namespace Eval.Core.Util.Roulette
         {
         }
 
+        public Roulette(
+            IRandomNumberGenerator random,
+            IReadOnlyList<T> elements,
+            Func<T, double> probabilitySelector)
+            : this(random, elements.Count)
+        {
+            foreach (var element in elements)
+            {
+                Add(element, probabilitySelector(element));
+            }
+        }
+
         public void Add(T element, double p)
         {
             _p_sum += p;
@@ -30,14 +42,22 @@ namespace Eval.Core.Util.Roulette
             _entries.Add(e);
         }
 
-
         public int NumberOfEntries()
         {
             return _entries.Count;
         }
 
+        public T Spin()
+        {
+            return SpinInternal(false);
+        }
 
-        public T Spin(bool remove)
+        public T SpinAndRemove()
+        {
+            return SpinInternal(true);
+        }
+
+        private T SpinInternal(bool remove)
         {
             if (_entries.Count == 0)
                 throw new InvalidOperationException("No entries in RouletteWheel.");
@@ -66,10 +86,10 @@ namespace Eval.Core.Util.Roulette
             return element.Value;
         }
 
-
         public override string ToString()
         {
             return $"Roulette{{Entries={_entries.ToString()}, p_sum={_p_sum}}}";
         }
+
     }
 }

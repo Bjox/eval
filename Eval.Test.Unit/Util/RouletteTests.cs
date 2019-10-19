@@ -36,7 +36,7 @@ namespace Eval.Test.Unit.Util
 
             for (int i = 0; i < 1000000; i++)
             {
-                var e = roulette.Spin(false);
+                var e = roulette.Spin();
                 count[e.N]++;
             }
 
@@ -64,9 +64,9 @@ namespace Eval.Test.Unit.Util
                 roulette.Add(new RouletteEntry(2), 0.00001);
 
 
-                var e1 = roulette.Spin(true);
+                var e1 = roulette.SpinAndRemove();
                 count[e1.N]++;
-                var e2 = roulette.Spin(true);
+                var e2 = roulette.SpinAndRemove();
                 count2[e2.N]++;
             }
 
@@ -94,8 +94,8 @@ namespace Eval.Test.Unit.Util
 
             roulette.Add(new RouletteEntry(0), 1);
 
-            roulette.Invoking(r => r.Spin(true)).Should().NotThrow();
-            roulette.Invoking(r => r.Spin(true)).Should().Throw<InvalidOperationException>();
+            roulette.Invoking(r => r.SpinAndRemove()).Should().NotThrow();
+            roulette.Invoking(r => r.SpinAndRemove()).Should().Throw<InvalidOperationException>();
         }
     }
 }

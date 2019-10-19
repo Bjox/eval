@@ -6,20 +6,26 @@ using System.Linq;
 
 namespace Eval.Core.Models
 {
-    public class Population : IEnumerable<IPhenotype>
+    public class Population : IEnumerable<IPhenotype>, IReadOnlyList<IPhenotype>
     {
+        public bool IsFilled { get; private set; }
         private int _index;
         private readonly IPhenotype[] _population;
 
         public Population(int size)
         {
             _population = new IPhenotype[size];
+            _index = 0;
         }
 
-        public bool IsFilled { get; private set; }
-
+        /// <summary>
+        /// Returns the Maxiumum allowed size of the population
+        /// </summary>
         public int Size => _population.Length;
 
+        /// <summary>
+        /// Returns the amount of elements currently in the population
+        /// </summary>
         public int Count => _index;
 
 
@@ -41,6 +47,8 @@ namespace Eval.Core.Models
         {
             ThrowIfAddOnFull();
             _population[_index++] = phenotype;
+
+            IsFilled = _index == _population.Length;
         }
 
         public void Clear()
@@ -60,7 +68,19 @@ namespace Eval.Core.Models
             // O(n)
             if (elitism == 1)
             {
-                var elite = GetMaxFitness();
+                IPhenotype elite = null;
+                switch (mode)
+                {
+                    case EAMode.MaximizeFitness:
+                        elite = GetMaxFitness();
+                        break;
+                    case EAMode.MinimizeFitness:
+                        elite = GetMinFitness();
+                        break;
+                    default:
+                        throw new NotImplementedException(mode.ToString());
+                }
+
                 Clear();
                 _population[0] = elite;
                 IsFilled = false;
@@ -69,7 +89,7 @@ namespace Eval.Core.Models
 
             // O(n log n)
             Sort(mode);
-            for (int i = _population.Length; i >= _population.Length - elitism; i--)
+            for (int i = _population.Length - 1; i >= _population.Length - elitism; i--)
             {
                 _population[i] = null;
             }
@@ -83,7 +103,7 @@ namespace Eval.Core.Models
             foreach (var individual in _population.Where(i => i != null && !i.IsEvaluated || reevaluate))
             {
                 individual.Evaluate();
-                phenotypeEvaluatedEvent(individual);
+                phenotypeEvaluatedEvent?.Invoke(individual);
             }
         }
 
