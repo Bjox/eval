@@ -1,0 +1,16 @@
+{
+    "PopulationSize": 100,
+    "OverproductionFactor": 1.5,
+    "MaximumGenerations": 500,
+    "Crossover": "Uniform",
+    "AdultSelection": "Overproduction",
+    "ParentSelection": "FitnessProportionate",
+    "CrossoverRate": 0.8,
+    "MutationRate": 0.02,
+    "TournamentSize": 10,
+    "TournamentProbability": 0.5,
+    "TargetFitness": 1.0,
+    "Mode": "MaximizeFitness",
+    "Elites": 1,
+    "ReevaluateElites": true
+}

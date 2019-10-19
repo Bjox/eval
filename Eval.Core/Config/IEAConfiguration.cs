@@ -2,7 +2,7 @@
 using Eval.Core.Selection.Adult;
 using Eval.Core.Selection.Parent;
 
-namespace Eval.Core
+namespace Eval.Core.Config
 {
     public interface IEAConfiguration
     {

@@ -9,7 +9,7 @@ namespace Eval.Core.Models
         private double _fitness;
 
         public bool IsEvaluated { get; private set; }
-        public Genotype Genotype { get; }
+        public IGenotype Genotype { get; }
         public double Fitness
         { 
             get
@@ -23,7 +23,7 @@ namespace Eval.Core.Models
             private set { _fitness = value; }
         }
 
-        public Phenotype(Genotype genotype)
+        public Phenotype(IGenotype genotype)
         {
             Genotype = genotype;
         }

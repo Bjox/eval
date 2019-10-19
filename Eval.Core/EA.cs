@@ -1,4 +1,5 @@
-﻿using Eval.Core.Models;
+﻿using Eval.Core.Config;
+using Eval.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Eval.Core
             EAConfiguration = configuration;
         }
 
-        public void Evolve()
+        public EAResult Evolve()
         {
             var population = new Population(EAConfiguration.PopulationSize);
 
@@ -30,16 +31,50 @@ namespace Eval.Core
             population.Evaluate(EAConfiguration.ReevaluateElites, PhenotypeEvaluatedEvent);
 
             var generation = 0;
+
             while (true)
             {
+                population.Sort(EAConfiguration.Mode);
+
+                // TODO: determine winner and raise new best event
+
+                // TODO: calc stats (avg, std...)
+
+                if (!RunCondition(generation))
+                {
+                    break;
+                }
                 NewGenerationEvent(generation);
+
+                // TODO: extract elites
+
+                // TODO: parent selection
+
+                // TODO: reproduction with crossover and mutation
+
+                // TODO: evaluate offspring
+
+                // TODO: adult selection
+
+                // TODO: reintroduce elites
 
                 generation++;
             }
 
+            return new EAResult
+            {
+                Winner = population[0],
+                EndPopulation = population
+            };
+        }
+
+        protected virtual bool RunCondition(int generation)
+        {
+            return generation < EAConfiguration.MaximumGenerations;
         }
 
         protected abstract IPhenotype CreateRandomPhenotype();
 
     }
+
 }

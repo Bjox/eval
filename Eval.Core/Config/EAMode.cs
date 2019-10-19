@@ -1,4 +1,4 @@
-﻿namespace Eval.Core
+﻿namespace Eval.Core.Config
 {
     public enum EAMode
     {

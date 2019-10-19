@@ -3,7 +3,7 @@
     public interface IPhenotype
     {
         bool IsEvaluated { get; }
-        Genotype Genotype { get; }
+        IGenotype Genotype { get; }
         double Fitness { get; }
         double Evaluate();
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Eval.Core;
+using Eval.Core.Config;
 using Eval.Core.Models;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
