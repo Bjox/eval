@@ -1,4 +1,5 @@
-﻿using Eval.Core.Models;
+﻿using Eval.Core.Config;
+using Eval.Core.Models;
 using Eval.Core.Util.EARandom;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,6 @@ namespace Eval.Core.Selection.Adult
 {
     public interface IAdultSelection
     {
-        void SelectAdults(Population offspring, Population population, int n, bool maximizeFitness);
+        void SelectAdults(Population offspring, Population population, int n, EAMode eamode);
     }
 }

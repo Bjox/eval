@@ -41,9 +41,9 @@ namespace Eval.Test.Unit.Config
             config.PopulationSize.Should().Be(100);
             config.OverproductionFactor.Should().Be(1.5);
             config.MaximumGenerations.Should().Be(500);
-            config.Crossover.Should().Be(Crossover.Uniform);
-            config.AdultSelection.Should().Be(AdultSelection.Overproduction);
-            config.ParentSelection.Should().Be(ParentSelection.FitnessProportionate);
+            config.CrossoverType.Should().Be(CrossoverType.Uniform);
+            config.AdultSelectionType.Should().Be(AdultSelectionType.Overproduction);
+            config.ParentSelectionType.Should().Be(ParentSelectionType.FitnessProportionate);
             config.CrossoverRate.Should().Be(0.8);
             config.MutationRate.Should().Be(0.02);
             config.TournamentSize.Should().Be(10);
@@ -63,9 +63,9 @@ namespace Eval.Test.Unit.Config
             config.PopulationSize.Should().Be(100);
             config.OverproductionFactor.Should().Be(1.5);
             config.MaximumGenerations.Should().Be(500);
-            config.Crossover.Should().Be(Crossover.Uniform);
-            config.AdultSelection.Should().Be(AdultSelection.Overproduction);
-            config.ParentSelection.Should().Be(ParentSelection.FitnessProportionate);
+            config.CrossoverType.Should().Be(CrossoverType.Uniform);
+            config.AdultSelectionType.Should().Be(AdultSelectionType.Overproduction);
+            config.ParentSelectionType.Should().Be(ParentSelectionType.FitnessProportionate);
             config.CrossoverRate.Should().Be(0.8);
             config.MutationRate.Should().Be(0.02);
             config.TournamentSize.Should().Be(10);

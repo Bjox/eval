@@ -14,9 +14,9 @@ namespace Eval.Core.Config
         public int PopulationSize { get; set; }
         public double OverproductionFactor { get; set; }
         public int MaximumGenerations { get; set; }
-        public Crossover Crossover { get; set; }
-        public AdultSelection AdultSelection { get; set; }
-        public ParentSelection ParentSelection { get; set; }
+        public CrossoverType CrossoverType { get; set;  }
+        public AdultSelectionType AdultSelectionType { get; set; }
+        public ParentSelectionType ParentSelectionType { get; set; }
         public double CrossoverRate { get; set; }
         public double MutationRate { get; set; }
         public int TournamentSize { get; set; }
@@ -25,6 +25,7 @@ namespace Eval.Core.Config
         public EAMode Mode { get; set; }
         public int Elites { get; set; }
         public bool ReevaluateElites { get; set; }
+
 
         public static EAConfiguration ReadConfigurationFromFile(string filePath)
         {

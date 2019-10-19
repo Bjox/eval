@@ -37,12 +37,12 @@ namespace Eval.Core.Models
             return new BinaryGenotype(this);
         }
 
-        public IGenotype CrossoverWith(IGenotype other, Crossover crossover, IRandomNumberGenerator random)
+        public IGenotype CrossoverWith(IGenotype other, CrossoverType crossover, IRandomNumberGenerator random)
         {
             switch (crossover)
             {
-                case Crossover.OnePoint: return OnePointCrossover(this, (BinaryGenotype)other, random);
-                case Crossover.Uniform: return UniformCrossover(this, (BinaryGenotype)other, random);
+                case CrossoverType.OnePoint: return OnePointCrossover(this, (BinaryGenotype)other, random);
+                case CrossoverType.Uniform: return UniformCrossover(this, (BinaryGenotype)other, random);
                 default:
                     throw new NotImplementedException($"Crossover {crossover} is not implemented in BinaryGenotype");
             }

@@ -18,21 +18,9 @@ namespace Eval.Core.Models
 
         public bool IsFilled { get; private set; }
 
-        public int Size
-        {
-            get
-            {
-                return _population.Length;
-            }
-        }
+        public int Size => _population.Length;
 
-        public int Count
-        {
-            get
-            {
-                return _index;
-            }
-        }
+        public int Count => _index;
 
 
         public IPhenotype this[int key]
@@ -64,16 +52,28 @@ namespace Eval.Core.Models
             IsFilled = false;
         }
 
-        public void Clear(int elitism)
+        public void Clear(int elitism, EAMode mode)
         {
             if (!IsFilled)
                 return;
 
+            // O(n)
             if (elitism == 1)
             {
                 var elite = GetMaxFitness();
                 Clear();
+                _population[0] = elite;
+                IsFilled = false;
+                return;
             }
+
+            // O(n log n)
+            Sort(mode);
+            for (int i = _population.Length; i >= _population.Length - elitism; i--)
+            {
+                _population[i] = null;
+            }
+            IsFilled = false;
         }
 
 

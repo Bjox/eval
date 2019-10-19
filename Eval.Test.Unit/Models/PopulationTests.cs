@@ -161,5 +161,42 @@ namespace Eval.Test.Unit.Models
             population.Fill(phenotypeMockFactory);
             return (mocks, phenotypeMockFactory);
         }
+
+        [TestMethod]
+        public void ClearShouldWipePopulation()
+        {
+            var popsize = 5;
+            population = new Population(popsize);
+            FillWithMocks(population);
+            population.Clear();
+
+            for (int i = 0; i < population.Size; i++)
+            {
+                Assert.IsNull(population[i]);
+            }
+        }
+
+
+        [TestMethod]
+        public void ClearWithOneEliteShouldLeavePhenotypeWithMaxFitness()
+        {
+            var popsize = 5;
+            population = new Population(popsize);
+            population.Add(new Mock<IPhenotype>().Setup(x => x.Evaluate => 1.0));
+            population.Clear(1, EAMode.MaximizeFitness);
+
+            for (int i = 1; i < population.Size; i++)
+            {
+                Assert.IsNull(population[i]);
+            }
+            Assert.
+        }
+
+        [TestMethod]
+        public void ClearWithMultipleElitesShouldLeavePhenotypesWithMaxFitness()
+        {
+            
+        }
     }
+
 }

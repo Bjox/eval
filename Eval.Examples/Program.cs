@@ -39,7 +39,7 @@ namespace Eval.Examples
     {
         public bool IsEvaluated => throw new NotImplementedException();
 
-        public Genotype Genotype => throw new NotImplementedException();
+        public IGenotype Genotype => throw new NotImplementedException();
 
         public double Fitness => 1;
 

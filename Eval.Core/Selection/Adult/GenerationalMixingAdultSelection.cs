@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Eval.Core.Config;
 using Eval.Core.Models;
 using Eval.Core.Util.EARandom;
 using Eval.Core.Util.Roulette;
@@ -16,11 +17,11 @@ namespace Eval.Core.Selection.Adult
             _rng = rng;
         }
 
-        public void SelectAdults(Population offspring, Population population, int n, bool maximizeFitness)
+        public void SelectAdults(Population offspring, Population population, int n, EAMode mode)
         {
             var roulette = new Roulette<Phenotype>(_rng, offspring.Size + population.Size);
 
-            if (maximizeFitness)
+            if (mode == EAMode.MaximizeFitness)
             {
 
             }
