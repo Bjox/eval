@@ -35,11 +35,21 @@ namespace Eval.Core.Util.Roulette
             }
         }
 
+
+
         public void Add(T element, double p)
         {
             _p_sum += p;
             var e = new Entry<T>(element, p);
             _entries.Add(e);
+        }
+
+        public void AddAll(IReadOnlyList<T> elements, Func<T, double> probabilitySelector)
+        {
+            foreach (var element in elements)
+            {
+                Add(element, probabilitySelector(element));
+            }
         }
 
         public int NumberOfEntries()

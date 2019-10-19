@@ -1,30 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Eval.Core.Config;
+﻿using Eval.Core.Config;
 using Eval.Core.Models;
 using Eval.Core.Util.EARandom;
 using Eval.Core.Util.Roulette;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace Eval.Core.Selection.Adult
 {
-    public class GenerationalMixingAdultSelection : IAdultSelection
+    public class Overproduction : IAdultSelection
     {
         private readonly IRandomNumberGenerator _rng;
 
-        public GenerationalMixingAdultSelection(IRandomNumberGenerator rng)
+        public Overproduction(IRandomNumberGenerator rng)
         {
             _rng = rng;
         }
 
         public void SelectAdults(Population offspring, Population population, int n, EAMode mode)
         {
-            var roulette = new Roulette<IPhenotype>(_rng, offspring.Size + population.Size);
+            var roulette = new Roulette<IPhenotype>(_rng, offspring.Size);
 
             if (mode == EAMode.MaximizeFitness)
             {
                 roulette.AddAll(offspring, e => e.Fitness);
-                roulette.AddAll(population, e => e.Fitness);
 
                 population.Clear();
                 for (int i = 0; i < n; i++)
@@ -42,15 +41,8 @@ namespace Eval.Core.Selection.Adult
                     p_max = Math.Max(e.Fitness, p_max);
                     p_min = Math.Min(e.Fitness, p_min);
                 }
-                foreach (var e in population)
-                {
-                    p_max = Math.Max(e.Fitness, p_max);
-                    p_min = Math.Min(e.Fitness, p_min);
-                }
 
                 foreach (var e in offspring)
-                    roulette.Add(e, (p_max + p_min) - e.Fitness);
-                foreach (var e in population)
                     roulette.Add(e, (p_max + p_min) - e.Fitness);
 
                 population.Clear();

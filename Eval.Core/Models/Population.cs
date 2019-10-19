@@ -57,6 +57,7 @@ namespace Eval.Core.Models
             {
                 _population[i] = null;
             }
+            _index = 0;
             IsFilled = false;
         }
 
@@ -83,6 +84,7 @@ namespace Eval.Core.Models
 
                 Clear();
                 _population[0] = elite;
+                _index = 1;
                 IsFilled = false;
                 return;
             }
@@ -93,6 +95,7 @@ namespace Eval.Core.Models
             {
                 _population[i] = null;
             }
+            _index = elitism;
             IsFilled = false;
         }
 

@@ -50,7 +50,7 @@ namespace Eval.Core
 
                 // TODO: parent selection
 
-                // TODO: reproduction with crossover and mutation
+                // TODO: reproduction with crossover and mutation, remember overproduction if configured
 
                 // TODO: evaluate offspring
 
