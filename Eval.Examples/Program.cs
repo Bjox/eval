@@ -15,37 +15,7 @@ namespace Eval.Examples
     {
         static void Main(string[] args)
         {
-            var pop = new Population(3);
-
-            Console.WriteLine(pop.Count);
-            pop.Add(new P());
-            pop.GetMaxFitness();
-            Console.WriteLine(pop.Count);
-
-            pop.Fill(() => new P());
-
-            pop.Add(new P());
-            Console.WriteLine(pop.Count);
-            pop.Add(new P());
-            Console.WriteLine(pop.Count);
-
-            Console.WriteLine("Done!");
-            Console.ReadKey();
-        }
-    }
-
-
-    class P : IPhenotype
-    {
-        public bool IsEvaluated => throw new NotImplementedException();
-
-        public IGenotype Genotype => throw new NotImplementedException();
-
-        public double Fitness => 1;
-
-        public double Evaluate()
-        {
-            throw new NotImplementedException();
+            
         }
     }
 }
