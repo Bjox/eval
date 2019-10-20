@@ -160,6 +160,11 @@ namespace Eval.Core.Models
             var best = _population[0];
             foreach (var p in _population)
             {
+                if (best == null && p != null)
+                {
+                    best = p;
+                    continue;
+                }
                 if (p != null && p.Fitness > best.Fitness)
                     best = p;
             }
@@ -171,6 +176,11 @@ namespace Eval.Core.Models
             var best = _population[0];
             foreach (var p in _population)
             {
+                if (best == null && p != null)
+                {
+                    best = p;
+                    continue;
+                }
                 if (p != null && p.Fitness < best.Fitness)
                     best = p;
             }
