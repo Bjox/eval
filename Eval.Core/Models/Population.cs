@@ -60,8 +60,7 @@ namespace Eval.Core.Models
 
         public void Clear(int elitism, EAMode mode)
         {
-            if (!IsFilled)
-                return;
+            ThrowIfNotFilled();
 
             if (elitism <= 0)
             {

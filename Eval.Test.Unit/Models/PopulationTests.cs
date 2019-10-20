@@ -236,7 +236,7 @@ namespace Eval.Test.Unit.Models
         [TestMethod]
         public void ClearWithMultipleElitesShouldLeavePhenotypesWithMaxFitness()
         {
-            var popsize = 4;
+            var popsize = 5;
             population = new Population(popsize);
 
             var m0 = new Mock<IPhenotype>();
@@ -254,6 +254,10 @@ namespace Eval.Test.Unit.Models
             var m3 = new Mock<IPhenotype>();
             m3.Setup(p => p.Fitness).Returns(0.4);
             population.Add(m3.Object);
+
+            var m4 = new Mock<IPhenotype>();
+            m4.Setup(p => p.Fitness).Returns(0.2);
+            population.Add(m4.Object);
 
             population.Evaluate(true, null);
             population.Clear(2, EAMode.MaximizeFitness);
