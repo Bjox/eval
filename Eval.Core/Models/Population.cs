@@ -53,10 +53,7 @@ namespace Eval.Core.Models
 
         public void Clear()
         {
-            for (int i = 0; i < _population.Length; i++)
-            {
-                _population[i] = null;
-            }
+            Array.Clear(_population, 0, _population.Length);
             _index = 0;
             IsFilled = false;
         }
@@ -65,6 +62,12 @@ namespace Eval.Core.Models
         {
             if (!IsFilled)
                 return;
+
+            if (elitism <= 0)
+            {
+                Clear();
+                return;
+            }
 
             // O(n)
             if (elitism == 1)
@@ -91,10 +94,7 @@ namespace Eval.Core.Models
 
             // O(n log n)
             Sort(mode);
-            for (int i = _population.Length - 1; i >= _population.Length - elitism; i--)
-            {
-                _population[i] = null;
-            }
+            Array.Clear(_population, elitism, _population.Length - elitism);
             _index = elitism;
             IsFilled = false;
         }

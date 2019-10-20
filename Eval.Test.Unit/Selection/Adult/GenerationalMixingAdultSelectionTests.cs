@@ -31,6 +31,10 @@ namespace Eval.Test.Unit.Selection.Adult
             {
                 return obj is P p && Name == p.Name;
             }
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
             protected override double CalculateFitness()
             {
                 return F;

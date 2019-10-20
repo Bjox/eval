@@ -106,10 +106,10 @@ namespace Eval.Test.Unit.Models
         {
             randomMock.Setup(rng => rng.NextBool()).Returns(true);
 
-            ((BinaryGenotype)g1.CrossoverWith(g2, Crossover.Uniform, randomMock.Object))
+            ((BinaryGenotype)g1.CrossoverWith(g2, CrossoverType.Uniform, randomMock.Object))
                 .Should().AllBeEquivalentTo(false);
 
-            ((BinaryGenotype)g2.CrossoverWith(g1, Crossover.Uniform, randomMock.Object))
+            ((BinaryGenotype)g2.CrossoverWith(g1, CrossoverType.Uniform, randomMock.Object))
                 .Should().AllBeEquivalentTo(true);
         }
 
@@ -118,10 +118,10 @@ namespace Eval.Test.Unit.Models
         {
             randomMock.Setup(rng => rng.NextBool()).Returns(false);
 
-            ((BinaryGenotype)g1.CrossoverWith(g2, Crossover.Uniform, randomMock.Object))
+            ((BinaryGenotype)g1.CrossoverWith(g2, CrossoverType.Uniform, randomMock.Object))
                 .Should().AllBeEquivalentTo(true);
 
-            ((BinaryGenotype)g2.CrossoverWith(g1, Crossover.Uniform, randomMock.Object))
+            ((BinaryGenotype)g2.CrossoverWith(g1, CrossoverType.Uniform, randomMock.Object))
                 .Should().AllBeEquivalentTo(false);
         }
 
@@ -150,10 +150,10 @@ namespace Eval.Test.Unit.Models
                 .Returns(true)
                 .Returns(false);
 
-            ((BinaryGenotype)g1.CrossoverWith(g2, Crossover.Uniform, randomMock.Object))
+            ((BinaryGenotype)g1.CrossoverWith(g2, CrossoverType.Uniform, randomMock.Object))
                 .ToBitString().Should().Be("0101010101");
 
-            ((BinaryGenotype)g2.CrossoverWith(g1, Crossover.Uniform, randomMock.Object))
+            ((BinaryGenotype)g2.CrossoverWith(g1, CrossoverType.Uniform, randomMock.Object))
                 .ToBitString().Should().Be("1010101010");
         }
     }

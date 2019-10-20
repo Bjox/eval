@@ -31,10 +31,10 @@ namespace Eval.Test.Unit.Models
             randomMock.Setup(rng => rng.Next(It.IsAny<int>()))
                 .Returns(0);
 
-            ((CharGenotype)g1.CrossoverWith(g2, Crossover.OnePoint, randomMock.Object))
+            ((CharGenotype)g1.CrossoverWith(g2, CrossoverType.OnePoint, randomMock.Object))
                 .Should().AllBeEquivalentTo('Z');
 
-            ((CharGenotype)g2.CrossoverWith(g1, Crossover.OnePoint, randomMock.Object))
+            ((CharGenotype)g2.CrossoverWith(g1, CrossoverType.OnePoint, randomMock.Object))
                 .Should().AllBeEquivalentTo('A');
         }
 
@@ -44,10 +44,10 @@ namespace Eval.Test.Unit.Models
             randomMock.Setup(rng => rng.Next(It.IsAny<int>()))
                 .Returns(genoLength);
 
-            ((CharGenotype)g1.CrossoverWith(g2, Crossover.OnePoint, randomMock.Object))
+            ((CharGenotype)g1.CrossoverWith(g2, CrossoverType.OnePoint, randomMock.Object))
                 .Should().AllBeEquivalentTo('A');
 
-            ((CharGenotype)g2.CrossoverWith(g1, Crossover.OnePoint, randomMock.Object))
+            ((CharGenotype)g2.CrossoverWith(g1, CrossoverType.OnePoint, randomMock.Object))
                 .Should().AllBeEquivalentTo('Z');
         }
 
@@ -57,10 +57,10 @@ namespace Eval.Test.Unit.Models
             randomMock.Setup(rng => rng.Next(It.IsAny<int>()))
                 .Returns(genoLength / 2);
 
-            ((CharGenotype)g1.CrossoverWith(g2, Crossover.OnePoint, randomMock.Object))
+            ((CharGenotype)g1.CrossoverWith(g2, CrossoverType.OnePoint, randomMock.Object))
                 .ToCharString().Should().Be("AAAAAZZZZZ");
 
-            ((CharGenotype)g2.CrossoverWith(g1, Crossover.OnePoint, randomMock.Object))
+            ((CharGenotype)g2.CrossoverWith(g1, CrossoverType.OnePoint, randomMock.Object))
                 .ToCharString().Should().Be("ZZZZZAAAAA");
         }
 
@@ -83,10 +83,10 @@ namespace Eval.Test.Unit.Models
         {
             randomMock.Setup(rng => rng.NextBool()).Returns(true);
 
-            ((CharGenotype)g1.CrossoverWith(g2, Crossover.Uniform, randomMock.Object))
+            ((CharGenotype)g1.CrossoverWith(g2, CrossoverType.Uniform, randomMock.Object))
                 .Should().AllBeEquivalentTo('A');
 
-            ((CharGenotype)g2.CrossoverWith(g1, Crossover.Uniform, randomMock.Object))
+            ((CharGenotype)g2.CrossoverWith(g1, CrossoverType.Uniform, randomMock.Object))
                 .Should().AllBeEquivalentTo('Z');
         }
 
@@ -95,10 +95,10 @@ namespace Eval.Test.Unit.Models
         {
             randomMock.Setup(rng => rng.NextBool()).Returns(false);
 
-            ((CharGenotype)g1.CrossoverWith(g2, Crossover.Uniform, randomMock.Object))
+            ((CharGenotype)g1.CrossoverWith(g2, CrossoverType.Uniform, randomMock.Object))
                 .Should().AllBeEquivalentTo('Z');
 
-            ((CharGenotype)g2.CrossoverWith(g1, Crossover.Uniform, randomMock.Object))
+            ((CharGenotype)g2.CrossoverWith(g1, CrossoverType.Uniform, randomMock.Object))
                 .Should().AllBeEquivalentTo('A');
         }
 
@@ -127,10 +127,10 @@ namespace Eval.Test.Unit.Models
                 .Returns(true)
                 .Returns(false);
 
-            ((CharGenotype)g1.CrossoverWith(g2, Crossover.Uniform, randomMock.Object))
+            ((CharGenotype)g1.CrossoverWith(g2, CrossoverType.Uniform, randomMock.Object))
                 .ToCharString().Should().Be("AZAZAZAZAZ");
 
-            ((CharGenotype)g2.CrossoverWith(g1, Crossover.Uniform, randomMock.Object))
+            ((CharGenotype)g2.CrossoverWith(g1, CrossoverType.Uniform, randomMock.Object))
                 .ToCharString().Should().Be("ZAZAZAZAZA");
         }
     }

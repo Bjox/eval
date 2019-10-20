@@ -41,12 +41,12 @@ namespace Eval.Core.Models
             return GetEnumerator();
         }
 
-        public IGenotype CrossoverWith(IGenotype other, Crossover crossover, IRandomNumberGenerator random)
+        public IGenotype CrossoverWith(IGenotype other, CrossoverType crossover, IRandomNumberGenerator random)
         {
             switch (crossover)
             {
-                case Crossover.OnePoint: return OnePointCrossover(this, (ArrayGenotype<AType, EType>)other, random);
-                case Crossover.Uniform: return UniformCrossover(this, (ArrayGenotype<AType, EType>)other, random);
+                case CrossoverType.OnePoint: return OnePointCrossover(this, (ArrayGenotype<AType, EType>)other, random);
+                case CrossoverType.Uniform: return UniformCrossover(this, (ArrayGenotype<AType, EType>)other, random);
                 default:
                     throw new NotImplementedException($"Crossover {crossover} is not implemented in ArrayGenotype");
             }
