@@ -38,5 +38,7 @@ namespace Eval.Core.Util.EARandom
         /// </summary>
         /// <param name="buffer"></param>
         void NextBytes(byte[] buffer);
+
+        bool NextBool();
     }
 }

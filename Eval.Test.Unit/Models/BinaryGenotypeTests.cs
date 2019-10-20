@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Eval.Core.Models;
+using Eval.Core.Util;
 using Eval.Core.Util.EARandom;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,19 +17,20 @@ namespace Eval.Test.Unit.Models
         private readonly int genoLength = 10;
         private BinaryGenotype g1;
         private BinaryGenotype g2;
+        private Mock<IRandomNumberGenerator> randomMock;
 
         [TestInitialize]
         public void TestInitialize()
         {
             genoLength.Should().Match(l => l % 2 == 0);
-            g1 = new BinaryGenotype(new BitArray(genoLength, false)); // All 0's
-            g2 = new BinaryGenotype(new BitArray(genoLength, true));  // All 1's
+            g1 = new BinaryGenotype(new BitArrayList(genoLength, false)); // All 0's
+            g2 = new BinaryGenotype(new BitArrayList(genoLength, true));  // All 1's
+            randomMock = new Mock<IRandomNumberGenerator>();
         }
 
         [TestMethod]
         public void OnePointCrossover_LeftmostSplitTest()
         {
-            var randomMock = new Mock<IRandomNumberGenerator>();
             randomMock.Setup(rng => rng.Next(It.IsAny<int>()))
                 .Returns(0);
 
@@ -42,7 +44,6 @@ namespace Eval.Test.Unit.Models
         [TestMethod]
         public void OnePointCrossover_RightmostSplitTest()
         {
-            var randomMock = new Mock<IRandomNumberGenerator>();
             randomMock.Setup(rng => rng.Next(It.IsAny<int>()))
                 .Returns(genoLength);
 
@@ -56,7 +57,6 @@ namespace Eval.Test.Unit.Models
         [TestMethod]
         public void OnePointCrossover_MiddleSplitTest()
         {
-            var randomMock = new Mock<IRandomNumberGenerator>();
             randomMock.Setup(rng => rng.Next(It.IsAny<int>()))
                 .Returns(genoLength / 2);
 
@@ -70,7 +70,7 @@ namespace Eval.Test.Unit.Models
         [TestMethod]
         public void MutateWith1ProbabilityShouldFlipAllBits()
         {
-            var g = new BinaryGenotype(new BitArray(10000, false));
+            var g = new BinaryGenotype(new BitArrayList(10000, false));
 
             g.Mutate(1.0, new DefaultRandomNumberGenerator("this is sed".GetHashCode()));
 
@@ -80,7 +80,7 @@ namespace Eval.Test.Unit.Models
         [TestMethod]
         public void MutateWith0ProbabilityShouldFlipNoBits()
         {
-            var g = new BinaryGenotype(new BitArray(10000, false));
+            var g = new BinaryGenotype(new BitArrayList(10000, false));
 
             g.Mutate(0.0, new DefaultRandomNumberGenerator("this is sed".GetHashCode()));
 
@@ -95,10 +95,66 @@ namespace Eval.Test.Unit.Models
 
             foreach (var prob in probabilities)
             {
-                var g = new BinaryGenotype(new BitArray(n, false));
+                var g = new BinaryGenotype(new BitArrayList(n, false));
                 g.Mutate(prob, new DefaultRandomNumberGenerator("this is sed".GetHashCode()));
                 (g.Count(b => b == true) / (double)n).Should().BeApproximately(prob, prob * 0.05); // 5% allowed delta
             }
+        }
+
+        [TestMethod]
+        public void UniformCrossoverAllFromFirst()
+        {
+            randomMock.Setup(rng => rng.NextBool()).Returns(true);
+
+            ((BinaryGenotype)g1.CrossoverWith(g2, Crossover.Uniform, randomMock.Object))
+                .Should().AllBeEquivalentTo(false);
+
+            ((BinaryGenotype)g2.CrossoverWith(g1, Crossover.Uniform, randomMock.Object))
+                .Should().AllBeEquivalentTo(true);
+        }
+
+        [TestMethod]
+        public void UniformCrossoverAllFromSecond()
+        {
+            randomMock.Setup(rng => rng.NextBool()).Returns(false);
+
+            ((BinaryGenotype)g1.CrossoverWith(g2, Crossover.Uniform, randomMock.Object))
+                .Should().AllBeEquivalentTo(true);
+
+            ((BinaryGenotype)g2.CrossoverWith(g1, Crossover.Uniform, randomMock.Object))
+                .Should().AllBeEquivalentTo(false);
+        }
+
+        [TestMethod]
+        public void UniformCrossoverMixedFromBoth()
+        {
+            var s = randomMock.SetupSequence(rng => rng.NextBool())
+                .Returns(true)
+                .Returns(false)
+                .Returns(true)
+                .Returns(false)
+                .Returns(true)
+                .Returns(false)
+                .Returns(true)
+                .Returns(false)
+                .Returns(true)
+                .Returns(false)
+                .Returns(true)
+                .Returns(false)
+                .Returns(true)
+                .Returns(false)
+                .Returns(true)
+                .Returns(false)
+                .Returns(true)
+                .Returns(false)
+                .Returns(true)
+                .Returns(false);
+
+            ((BinaryGenotype)g1.CrossoverWith(g2, Crossover.Uniform, randomMock.Object))
+                .ToBitString().Should().Be("0101010101");
+
+            ((BinaryGenotype)g2.CrossoverWith(g1, Crossover.Uniform, randomMock.Object))
+                .ToBitString().Should().Be("1010101010");
         }
     }
 }

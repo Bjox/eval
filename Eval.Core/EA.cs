@@ -30,15 +30,20 @@ namespace Eval.Core
             population.Fill(CreateRandomPhenotype);
             population.Evaluate(EAConfiguration.ReevaluateElites, PhenotypeEvaluatedEvent);
 
+            IPhenotype best = null;
             var generation = 0;
 
             while (true)
             {
                 population.Sort(EAConfiguration.Mode);
+                var generationBest = population.First();
+                if (IsBetterThan(generationBest, best))
+                {
+                    best = generationBest;
+                    NewBestFitnessEvent(best);
+                }
 
-                // TODO: determine winner and raise new best event
-
-                // TODO: calc stats (avg, std...)
+                // TODO: calc stats (avg, std...) and raise events?
 
                 if (!RunCondition(generation))
                 {
@@ -66,6 +71,23 @@ namespace Eval.Core
                 Winner = population[0],
                 EndPopulation = population
             };
+        }
+
+        private bool IsBetterThan(IPhenotype subject, IPhenotype comparedTo)
+        {
+            if (comparedTo == null)
+            {
+                return true;
+            }
+            switch (EAConfiguration.Mode)
+            {
+                case EAMode.MaximizeFitness:
+                    return subject.Fitness > comparedTo.Fitness;
+                case EAMode.MinimizeFitness:
+                    return subject.Fitness < comparedTo.Fitness;
+                default:
+                    throw new NotImplementedException($"IsBetterThan not implemented for EA mode {EAConfiguration.Mode}");
+            }
         }
 
         protected virtual bool RunCondition(int generation)

@@ -125,7 +125,7 @@ namespace Eval.Test.Unit.Util
         [TestMethod]
         public void InitializingEmptyRouletteShouldThrow()
         {
-            Action action = () => new AliasRoulette<Entry>(new Entry[0], e => e.Probability, random);
+            Action action = () => new AliasRoulette<Entry>(random, new Entry[0], e => e.Probability);
             action.Should().Throw<ArgumentException>();
         }
 
@@ -139,7 +139,7 @@ namespace Eval.Test.Unit.Util
             }
             Console.WriteLine($"spins: {spins}");
 
-            var roulette = new AliasRoulette<Entry>(elements, e => e.Probability, random);
+            var roulette = new AliasRoulette<Entry>(random, elements, e => e.Probability);
 
             for (int i = 0; i < spins; i++)
             {

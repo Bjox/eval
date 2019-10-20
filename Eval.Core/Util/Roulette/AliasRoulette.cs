@@ -15,9 +15,9 @@ namespace Eval.Core.Util.Roulette
         private readonly IReadOnlyList<T> elements;
 
         public AliasRoulette(
+            IRandomNumberGenerator random,
             IReadOnlyList<T> elements,
-            Func<T, double> probabilitySelector,
-            IRandomNumberGenerator random)
+            Func<T, double> probabilitySelector)
         {
             this.elements = elements;
             this.random = random;

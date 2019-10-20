@@ -22,5 +22,10 @@ namespace Eval.Core.Util.EARandom
             : base(seed)
         {
         }
+
+        public bool NextBool()
+        {
+            return NextDouble() < 0.5;
+        }
     }
 }
