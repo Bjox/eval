@@ -103,7 +103,7 @@ namespace Eval.Core.Models
         public void Evaluate(bool reevaluate, Action<IPhenotype> phenotypeEvaluatedEvent)
         {
             ThrowIfNotFilled();
-            foreach (var individual in _population.Where(i => i != null && !i.IsEvaluated || reevaluate))
+            foreach (var individual in _population.Where(i => i != null && (!i.IsEvaluated || reevaluate)))
             {
                 individual.Evaluate();
                 phenotypeEvaluatedEvent?.Invoke(individual);
