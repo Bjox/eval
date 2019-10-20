@@ -185,5 +185,40 @@ namespace Eval.Core.Models
             }
             return best;
         }
+
+        public PopulationStatistics CalculatePopulationStatistics(EAMode mode)
+        {
+            ThrowIfNotFilled();
+
+            var fitnessMax = double.MinValue;
+            var fitnessMin = double.MaxValue;
+            var fitnessSum = 0.0;
+
+            for (int i = 0; i < Count; i++)
+            {
+                var p = _population[i];
+                fitnessSum += p.Fitness;
+                fitnessMax = Math.Max(fitnessMax, p.Fitness);
+                fitnessMin = Math.Max(fitnessMin, p.Fitness);
+            }
+
+            var avg = fitnessSum / Count;
+            var s = 0.0;
+            for (int i = 0; i < Count; i++)
+            {
+                var p = _population[i];
+                var d = p.Fitness - avg;
+                s += d * d;
+            }
+            var std = Math.Sqrt(s / Count);
+
+            return new PopulationStatistics
+            {
+                AverageFitness = avg,
+                MaxFitness = fitnessMax,
+                MinFitness = fitnessMin,
+                StandardDeviationFitness = std
+            };
+        }
     }
 }

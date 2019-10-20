@@ -21,5 +21,6 @@ namespace Eval.Core.Config
         EAMode Mode { get; }
         int Elites { get; }
         bool ReevaluateElites { get; }
+        bool CalculateStatistics { get; }
     }
 }

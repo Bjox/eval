@@ -18,32 +18,58 @@ namespace Eval.Core
         public event Action<IPhenotype> PhenotypeEvaluatedEvent;
         public event Action AbortedEvent;
 
+        protected readonly List<double> FitnessAverages;
+        protected readonly List<double> FitnessBests;
+        protected readonly List<double> FitnessDeviations;
+
+        protected IPhenotype GenerationalBest;
+        protected IPhenotype Best;
+
         public EA(IEAConfiguration configuration)
         {
             EAConfiguration = configuration;
+
+            FitnessAverages = new List<double>();
+            FitnessBests = new List<double>();
+            FitnessDeviations = new List<double>();
+        }
+
+        protected abstract IPhenotype CreateRandomPhenotype();
+
+        /// <summary>
+        /// Creates a new population filled with phenotypes from CreateRandomPhenotype method.
+        /// Override this method to seed the EA with a specific population.
+        /// </summary>
+        /// <param name="populationSize"></param>
+        /// <returns></returns>
+        public virtual Population GenerateInitialPopulation(int populationSize)
+        {
+            var population = new Population(populationSize);
+            population.Fill(CreateRandomPhenotype);
+            return population;
         }
 
         public EAResult Evolve()
         {
-            var population = new Population(EAConfiguration.PopulationSize);
+            var population = GenerateInitialPopulation(EAConfiguration.PopulationSize);
 
-            population.Fill(CreateRandomPhenotype);
             population.Evaluate(EAConfiguration.ReevaluateElites, PhenotypeEvaluatedEvent);
 
-            IPhenotype best = null;
+            Best = null;
             var generation = 0;
 
             while (true)
             {
                 population.Sort(EAConfiguration.Mode);
                 var generationBest = population.First();
-                if (IsBetterThan(generationBest, best))
+                if (IsBetterThan(generationBest, Best))
                 {
-                    best = generationBest;
-                    NewBestFitnessEvent(best);
+                    Best = generationBest;
+                    NewBestFitnessEvent(Best);
                 }
 
                 // TODO: calc stats (avg, std...) and raise events?
+                CalculateStatistics(population);
 
                 if (!RunCondition(generation))
                 {
@@ -95,8 +121,29 @@ namespace Eval.Core
             return generation < EAConfiguration.MaximumGenerations;
         }
 
-        protected abstract IPhenotype CreateRandomPhenotype();
+        protected virtual void CalculateStatistics(Population population)
+        {
+            if (!EAConfiguration.CalculateStatistics)
+                return;
 
+            var popstats = population.CalculatePopulationStatistics(EAConfiguration.Mode);
+
+            FitnessAverages.Add(popstats.AverageFitness);
+
+            switch (EAConfiguration.Mode)
+            {
+                case EAMode.MaximizeFitness:
+                    FitnessBests.Add(popstats.MaxFitness);
+                    break;
+                case EAMode.MinimizeFitness:
+                    FitnessBests.Add(popstats.MinFitness);
+                    break;
+                default:
+                    throw new NotImplementedException($"CalculateStatistics not implemented for EA mode {EAConfiguration.Mode}");
+            }
+
+            FitnessDeviations.Add(popstats.StandardDeviationFitness);
+        }
     }
 
 }
