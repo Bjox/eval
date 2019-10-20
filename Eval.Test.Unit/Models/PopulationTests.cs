@@ -177,20 +177,6 @@ namespace Eval.Test.Unit.Models
         }
 
 
-        private class Dummy : IPhenotype
-        {
-            public bool IsEvaluated => throw new NotImplementedException();
-
-            public IGenotype Genotype => throw new NotImplementedException();
-
-            public double Fitness => throw new NotImplementedException();
-
-            public double Evaluate()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
         [TestMethod]
         public void ClearWithOneEliteShouldLeavePhenotypeWithMaxFitness()
         {
