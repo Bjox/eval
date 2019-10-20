@@ -16,7 +16,6 @@ namespace Eval.Core.Config
         public int MaximumGenerations { get; set; }
         public CrossoverType CrossoverType { get; set;  }
         public AdultSelectionType AdultSelectionType { get; set; }
-        public double OverProductionRate { get; set; }
         public ParentSelectionType ParentSelectionType { get; set; }
         public double CrossoverRate { get; set; }
         public double MutationRate { get; set; }
