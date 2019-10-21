@@ -8,11 +8,11 @@ using System.Text;
 
 namespace Eval.Core.Selection.Adult
 {
-    public class Overproduction : IAdultSelection
+    public class OverproductionAdultSelection : IAdultSelection
     {
         private readonly IRandomNumberGenerator _rng;
 
-        public Overproduction(IRandomNumberGenerator rng)
+        public OverproductionAdultSelection(IRandomNumberGenerator rng)
         {
             _rng = rng;
         }
