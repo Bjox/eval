@@ -37,6 +37,7 @@ namespace Eval.Test.Unit.Models
         public void FillShouldCallFactoryCorrectNumberOfTimes()
         {
             var phenotypeFactoryMock = new Mock<Func<IPhenotype>>();
+            phenotypeFactoryMock.Setup(f => f.Invoke()).Returns(new Mock<IPhenotype>().Object);
             population.Fill(phenotypeFactoryMock.Object);
             phenotypeFactoryMock.Verify(factory => factory(), Times.Exactly(preferredPopSize));
         }
@@ -57,7 +58,7 @@ namespace Eval.Test.Unit.Models
         [TestMethod]
         public void FillShouldSetIsFilledFlag()
         {
-            population.Fill(new Mock<Func<IPhenotype>>().Object);
+            population.Fill(() => new Mock<IPhenotype>().Object);
             population.IsFilled.Should().BeTrue();
         }
 
@@ -301,6 +302,164 @@ namespace Eval.Test.Unit.Models
             }
             population[0].Fitness.Should().Be(0.4);
             population[1].Fitness.Should().Be(0.6);
+        }
+
+        [TestMethod]
+        public void TestGetProbabilitySelectorWithMaximizeMode()
+        {
+            var pMocks = new List<Mock<IPhenotype>>();
+            pMocks.Add(CreatePhenotypeMock(1));
+            pMocks.Add(CreatePhenotypeMock(2));
+            pMocks.Add(CreatePhenotypeMock(3));
+            pMocks.Add(CreatePhenotypeMock(5));
+
+            var expected = new List<double>() { 1, 2, 3, 5 };
+
+            population = new Population(4);
+            foreach (var mock in pMocks)
+            {
+                population.Add(mock.Object);
+            }
+
+            var probSelector = population.GetProbabilitySelector(EAMode.MaximizeFitness);
+
+            for (int i = 0; i < pMocks.Count; i++)
+            {
+                probSelector(pMocks[i].Object).Should().Be(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void TestGetProbabilitySelectorWithMinimizeMode()
+        {
+            var pMocks = new List<Mock<IPhenotype>>();
+            pMocks.Add(CreatePhenotypeMock(1));
+            pMocks.Add(CreatePhenotypeMock(2));
+            pMocks.Add(CreatePhenotypeMock(3));
+            pMocks.Add(CreatePhenotypeMock(5));
+
+            var expected = new List<double>() { 5, 4, 3, 1 };
+
+            population = new Population(4);
+            foreach (var mock in pMocks)
+            {
+                population.Add(mock.Object);
+            }
+
+            var probSelector = population.GetProbabilitySelector(EAMode.MinimizeFitness);
+
+            for (int i = 0; i < pMocks.Count; i++)
+            {
+                probSelector(pMocks[i].Object).Should().Be(expected[i]);
+            }
+        }
+
+        [TestMethod]
+        public void GetProbabilitySelectorIsNotMutable()
+        {
+            population = new Population(2);
+            population.Add(CreatePhenotypeMock(1).Object);
+            population.Add(CreatePhenotypeMock(2).Object);
+
+            var firstSelector = population.GetProbabilitySelector(EAMode.MinimizeFitness);
+
+            population.Clear();
+            population.Add(CreatePhenotypeMock(3).Object);
+            population.Add(CreatePhenotypeMock(100).Object);
+
+            var secondSelector = population.GetProbabilitySelector(EAMode.MinimizeFitness);
+
+            firstSelector(CreatePhenotypeMock(2).Object).Should().Be(1);
+            firstSelector(CreatePhenotypeMock(1).Object).Should().Be(2);
+
+            secondSelector(CreatePhenotypeMock(100).Object).Should().Be(3);
+            secondSelector(CreatePhenotypeMock(3).Object).Should().Be(100);
+        }
+
+        [TestMethod]
+        public void CallingAddWithNullShouldThrow()
+        {
+            population.Invoking(pop => pop.Add(null))
+                .Should().ThrowExactly<ArgumentNullException>();
+        }
+
+        [TestMethod]
+        public void PopuationEnumerationShouldNotProduceNull()
+        {
+            void AssertNoNulls()
+            {
+                foreach (var p in population) p.Should().NotBeNull();
+            }
+
+            AssertNoNulls();
+
+            population.Add(CreatePhenotypeMock(1).Object);
+            AssertNoNulls();
+
+            population.Fill(() => CreatePhenotypeMock(1).Object);
+            AssertNoNulls();
+
+            population.Clear(2, EAMode.MaximizeFitness);
+            AssertNoNulls();
+
+            population.Fill(() => CreatePhenotypeMock(1).Object);
+            population.Clear(1, EAMode.MaximizeFitness);
+            AssertNoNulls();
+
+            population.Clear();
+            AssertNoNulls();
+        }
+
+        [TestMethod]
+        public void PopulationShouldNotBeInitiallySorted()
+        {
+            population.IsSorted.Should().BeFalse();
+        }
+
+        [TestMethod]
+        public void PopulationShouldBeSortedAfterCallingSort()
+        {
+            population.Fill(() => CreatePhenotypeMock(1).Object);
+            population.Sort(EAMode.MaximizeFitness);
+            population.IsSorted.Should().BeTrue();
+        }
+
+        [TestMethod]
+        public void PopulationShouldNotBeSortedAfterClear()
+        {
+            void Setup()
+            {
+                population.Fill(() => CreatePhenotypeMock(1).Object);
+                population.Sort(EAMode.MaximizeFitness);
+                population.IsSorted.Should().BeTrue();
+            }
+
+            Setup();
+            population.Clear();
+            population.IsSorted.Should().BeFalse();
+
+            Setup();
+            population.Clear(1, EAMode.MaximizeFitness);
+            population.IsSorted.Should().BeFalse();
+
+            Setup();
+            population.Clear(2, EAMode.MaximizeFitness);
+            population.IsSorted.Should().BeFalse();
+        }
+
+        [TestMethod]
+        public void PopulationShouldBeSortedAfterAdd()
+        {
+            population.Add(CreatePhenotypeMock(1).Object);
+            population.IsSorted.Should().BeFalse();
+        }
+
+        private static Mock<IPhenotype> CreatePhenotypeMock(double fitnessSetup)
+        {
+            var pmock = new Mock<IPhenotype>();
+            pmock.SetupGet(p => p.Fitness).Returns(fitnessSetup);
+            pmock.SetupGet(p => p.IsEvaluated).Returns(true);
+            return pmock;
         }
     }
 

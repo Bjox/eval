@@ -8,7 +8,7 @@ using System.Linq;
 namespace Eval.Test.Unit.Selection.Adult
 {
     [TestClass]
-    public class GenerationalReplacementTests
+    public class GenerationalReplacementAdultSelectionTests
     {
         private class P : Phenotype
         {
@@ -50,7 +50,7 @@ namespace Eval.Test.Unit.Selection.Adult
             var p1 = new P("p1", 0.0);
             population.Add(p1);
 
-            var genmix = new GenerationalReplacement();
+            var genmix = new GenerationalReplacementAdultSelection();
             genmix.SelectAdults(offspring, population, 2, EAMode.MaximizeFitness);
 
             Assert.IsTrue(population.Contains(o0));

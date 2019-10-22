@@ -77,8 +77,10 @@
     <Compile Include="Models\CharGenotypeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selection\Adult\GenerationalMixingAdultSelectionTests.cs" />
-    <Compile Include="Selection\Adult\GenerationalReplacementTests.cs" />
-    <Compile Include="Selection\Adult\OverproductionTests.cs" />
+    <Compile Include="Selection\Adult\GenerationalReplacementAdultSelectionTests.cs" />
+    <Compile Include="Selection\Adult\OverproductionAdultSelectionTests.cs" />
+    <Compile Include="Selection\Parent\ProportionateParentSelectionTests.cs" />
+    <Compile Include="Selection\Parent\RankParentSelectionTests.cs" />
     <Compile Include="Util\RouletteTests.cs" />
     <Compile Include="Util\AliasRouletteTests.cs" />
   </ItemGroup>

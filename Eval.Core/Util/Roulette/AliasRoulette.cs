@@ -18,6 +18,14 @@ namespace Eval.Core.Util.Roulette
             IRandomNumberGenerator random,
             IReadOnlyList<T> elements,
             Func<T, double> probabilitySelector)
+            : this(random, elements, (p, i) => probabilitySelector(p))
+        {
+        }
+
+        public AliasRoulette(
+            IRandomNumberGenerator random,
+            IReadOnlyList<T> elements,
+            Func<T, int, double> probabilitySelector)
         {
             this.elements = elements;
             this.random = random;
@@ -33,7 +41,7 @@ namespace Eval.Core.Util.Roulette
             Initialize(probabilitySelector);
         }
 
-        private void Initialize(Func<T, double> probabilitySelector)
+        private void Initialize(Func<T, int, double> probabilitySelector)
         {
             // Alias algo: http://www.keithschwarz.com/darts-dice-coins/
 
@@ -42,7 +50,7 @@ namespace Eval.Core.Util.Roulette
             var p_sum = 0.0;
             for (int i = 0; i < n; i++)
             {
-                var p_e = probabilitySelector(elements[i]);
+                var p_e = probabilitySelector(elements[i], i);
                 p_sum += p_e;
                 p[i] = p_e;
             }
