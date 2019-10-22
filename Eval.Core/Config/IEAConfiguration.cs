@@ -22,7 +22,7 @@ namespace Eval.Core.Config
         int Elites { get; }
         bool ReevaluateElites { get; }
         bool CalculateStatistics { get; }
-        public int WorkerThreads { get; }
-        public int IOThreads { get; }
+        int WorkerThreads { get; }
+        int IOThreads { get; }
     }
 }

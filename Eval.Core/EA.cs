@@ -164,7 +164,12 @@ namespace Eval.Core
                 AbortedEvent();
                 return false;
             }
-            return generation < EAConfiguration.MaximumGenerations;
+            if (generation >= EAConfiguration.MaximumGenerations)
+            {
+                GenerationLimitReachedEvent(generation);
+                return false;
+            }
+            return true;
         }
 
         protected virtual void CalculateStatistics(Population population)
