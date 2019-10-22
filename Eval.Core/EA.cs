@@ -198,7 +198,7 @@ namespace Eval.Core
 
         protected virtual void CalculateFitnesses(Population population)
         {
-            if (EAConfiguration.WorkerThreads <= 0)
+            if (EAConfiguration.WorkerThreads <= 1)
             {
                 foreach (var p in population)
                 {
