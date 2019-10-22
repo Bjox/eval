@@ -26,6 +26,8 @@ namespace Eval.Core.Config
         public int Elites { get; set; }
         public bool ReevaluateElites { get; set; }
         public bool CalculateStatistics { get; set; }
+        public int WorkerThreads { get; set; }
+        public int IOThreads { get; set; }
 
 
         public static EAConfiguration ReadConfigurationFromFile(string filePath)

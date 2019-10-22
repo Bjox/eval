@@ -24,6 +24,7 @@ namespace Eval.Core
 
         protected IPhenotype GenerationalBest;
         protected IPhenotype Best;
+        protected bool Abort;
 
         public EA(IEAConfiguration configuration)
         {
@@ -67,8 +68,7 @@ namespace Eval.Core
                     Best = generationBest;
                     NewBestFitnessEvent(Best);
                 }
-
-                // TODO: calc stats (avg, std...) and raise events?
+                
                 CalculateStatistics(population);
 
                 if (!RunCondition(generation))
@@ -118,6 +118,11 @@ namespace Eval.Core
 
         protected virtual bool RunCondition(int generation)
         {
+            if (Abort)
+            {
+                AbortedEvent();
+                return false;
+            }
             return generation < EAConfiguration.MaximumGenerations;
         }
 
@@ -143,6 +148,11 @@ namespace Eval.Core
             }
 
             FitnessDeviations.Add(popstats.StandardDeviationFitness);
+        }
+
+        protected virtual void CalculateFitnesses(Population population)
+        {
+
         }
     }
 
