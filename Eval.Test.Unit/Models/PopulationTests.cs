@@ -468,7 +468,7 @@ namespace Eval.Test.Unit.Models
             stats.MinFitness.Should().Be(0.0);
             stats.AverageFitness.Should().Be(2.0);
             stats.VarianceFitness.Should().Be(2.0);
-            stats.StandardDeviationFitness.Should().Be(1.4142135623730952);
+            stats.StandardDeviationFitness.Should().BeApproximately(1.4142135623, 1e-10);
         }
 
         private static Mock<IPhenotype> CreatePhenotypeMock(double fitnessSetup)
