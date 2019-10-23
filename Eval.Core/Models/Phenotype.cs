@@ -35,6 +35,12 @@ namespace Eval.Core.Models
             return Fitness;
         }
 
+        public int CompareTo(IPhenotype other)
+        {
+            return Fitness.CompareTo(other.Fitness);
+        }
+
         protected abstract double CalculateFitness();
+
     }
 }

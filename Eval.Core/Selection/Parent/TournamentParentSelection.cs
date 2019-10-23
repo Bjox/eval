@@ -12,7 +12,6 @@ namespace Eval.Core.Selection.Parent
         private readonly int _tournamentSize;
         private readonly double _prob;
 
-
         public TournamentParentSelection(IEAConfiguration configuration)
         {
             if (configuration.TournamentSize < 2)
