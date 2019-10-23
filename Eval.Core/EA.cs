@@ -22,9 +22,7 @@ namespace Eval.Core
         public event Action<IPhenotype> PhenotypeEvaluatedEvent;
         public event Action AbortedEvent;
 
-        protected readonly List<double> FitnessAverages;
-        protected readonly List<double> FitnessBests;
-        protected readonly List<double> FitnessDeviations;
+        protected readonly List<PopulationStatistics> PopulationStatistics;
         protected readonly List<IPhenotype> Elites;
 
         protected IPhenotype GenerationalBest;
@@ -38,9 +36,7 @@ namespace Eval.Core
         {
             EAConfiguration = configuration;
 
-            FitnessAverages = new List<double>();
-            FitnessBests = new List<double>();
-            FitnessDeviations = new List<double>();
+            PopulationStatistics = new List<PopulationStatistics>();
 
             if (EAConfiguration.WorkerThreads > 1)
             {
@@ -178,22 +174,7 @@ namespace Eval.Core
                 return;
 
             var popstats = population.CalculatePopulationStatistics();
-
-            FitnessAverages.Add(popstats.AverageFitness);
-
-            switch (EAConfiguration.Mode)
-            {
-                case EAMode.MaximizeFitness:
-                    FitnessBests.Add(popstats.MaxFitness);
-                    break;
-                case EAMode.MinimizeFitness:
-                    FitnessBests.Add(popstats.MinFitness);
-                    break;
-                default:
-                    throw new NotImplementedException($"CalculateStatistics not implemented for EA mode {EAConfiguration.Mode}");
-            }
-
-            FitnessDeviations.Add(popstats.StandardDeviationFitness);
+            PopulationStatistics.Add(popstats);
         }
 
         protected virtual void CalculateFitnesses(Population population)
