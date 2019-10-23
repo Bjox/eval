@@ -194,38 +194,40 @@ namespace Eval.Core.Models
             return best;
         }
 
-        public PopulationStatistics CalculatePopulationStatistics(EAMode mode)
+        public PopulationStatistics CalculatePopulationStatistics()
         {
             ThrowIfNotFilled();
 
             var fitnessMax = double.MinValue;
             var fitnessMin = double.MaxValue;
             var fitnessSum = 0.0;
-
+            var avg = 0.0;
+            var m2 = 0.0;
+            
             for (int i = 0; i < Count; i++)
             {
                 var p = _population[i];
                 fitnessSum += p.Fitness;
                 fitnessMax = Math.Max(fitnessMax, p.Fitness);
-                fitnessMin = Math.Max(fitnessMin, p.Fitness);
+                fitnessMin = Math.Min(fitnessMin, p.Fitness);
+
+                var d = p.Fitness - avg;
+                avg += d / (i + 1);
+                var d2 = p.Fitness - avg;
+                m2 += d * d2;
             }
 
-            var avg = fitnessSum / Count;
-            var s = 0.0;
-            for (int i = 0; i < Count; i++)
-            {
-                var p = _population[i];
-                var d = p.Fitness - avg;
-                s += d * d;
-            }
-            var std = Math.Sqrt(s / Count);
+            var variance = m2 / Count;
+            var sampleVariance = m2 / (Count - 1);
+            var std = Math.Sqrt(variance);
 
             return new PopulationStatistics
             {
                 AverageFitness = avg,
                 MaxFitness = fitnessMax,
                 MinFitness = fitnessMin,
-                StandardDeviationFitness = std
+                StandardDeviationFitness = std,
+                VarianceFitness = variance
             };
         }
 

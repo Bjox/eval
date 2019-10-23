@@ -177,7 +177,7 @@ namespace Eval.Core
             if (!EAConfiguration.CalculateStatistics)
                 return;
 
-            var popstats = population.CalculatePopulationStatistics(EAConfiguration.Mode);
+            var popstats = population.CalculatePopulationStatistics();
 
             FitnessAverages.Add(popstats.AverageFitness);
 

@@ -454,6 +454,23 @@ namespace Eval.Test.Unit.Models
             population.IsSorted.Should().BeFalse();
         }
 
+        [TestMethod]
+        public void PopulationStatisticsTest()
+        {
+            population = new Population(5);
+            for (int i = 0; i < 5; i++)
+            {
+                population.Add(CreatePhenotypeMock(i).Object);
+            }
+
+            var stats = population.CalculatePopulationStatistics();
+            stats.MaxFitness.Should().Be(4.0);
+            stats.MinFitness.Should().Be(0.0);
+            stats.AverageFitness.Should().Be(2.0);
+            stats.VarianceFitness.Should().Be(2.0);
+            stats.StandardDeviationFitness.Should().Be(1.4142135623730952);
+        }
+
         private static Mock<IPhenotype> CreatePhenotypeMock(double fitnessSetup)
         {
             var pmock = new Mock<IPhenotype>();
