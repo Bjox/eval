@@ -1,4 +1,5 @@
 ﻿using Eval.Core.Config;
+using Eval.Core.Util.EARandom;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,6 +10,9 @@ namespace Eval.Core.Models
     public class Population : IReadOnlyList<IPhenotype>
     {
         public bool IsFilled { get; private set; }
+        /// <summary>
+        /// A sorted population will always have the best fitness (lowest or highest) at index 0.
+        /// </summary>
         public bool IsSorted { get; private set; }
         private int _index;
         private readonly IPhenotype[] _population;
@@ -226,6 +230,12 @@ namespace Eval.Core.Models
             {
                 throw new NotImplementedException($"GetProbabilitySelector not implemented for mode {mode}");
             }
+        }
+
+        public IPhenotype DrawRandom(IRandomNumberGenerator random)
+        {
+            ThrowIfNotFilled();
+            return this[random.Next(Size)];
         }
     }
 }

@@ -79,10 +79,10 @@
     <Compile Include="Selection\Adult\GenerationalMixingAdultSelectionTests.cs" />
     <Compile Include="Selection\Adult\GenerationalReplacementAdultSelectionTests.cs" />
     <Compile Include="Selection\Adult\OverproductionAdultSelectionTests.cs" />
-    <Compile Include="Selection\Parent\ProportionateParentSelectionTests.cs" />
-    <Compile Include="Selection\Parent\RankParentSelectionTests.cs" />
+    <Compile Include="Selection\Parent\ParentSelectionTests.cs" />
     <Compile Include="Util\RouletteTests.cs" />
-    <Compile Include="Util\AliasRouletteTests.cs" />
+    <Compile Include="Util\Roulette\AliasRouletteTests.cs" />
+    <Compile Include="Util\MathUtilTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
