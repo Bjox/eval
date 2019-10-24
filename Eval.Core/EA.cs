@@ -37,6 +37,7 @@ namespace Eval.Core
             EAConfiguration = configuration;
 
             PopulationStatistics = new List<PopulationStatistics>();
+            Elites = new List<IPhenotype>(EAConfiguration.Elites >= 1 ? EAConfiguration.Elites : 0);
 
             if (EAConfiguration.WorkerThreads > 1)
             {
