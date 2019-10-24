@@ -10,7 +10,7 @@ namespace Eval.Examples
     {
         static void Main(string[] args)
         {
-
+            OneMaxEA.Run();
         }
     }
 }

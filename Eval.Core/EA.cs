@@ -21,6 +21,7 @@ namespace Eval.Core
         public event Action<int> GenerationLimitReachedEvent;
         public event Action<IPhenotype> PhenotypeEvaluatedEvent;
         public event Action AbortedEvent;
+        public event Action<PopulationStatistics> PopulationStatisticsCalculated;
 
         protected readonly List<PopulationStatistics> PopulationStatistics;
         protected readonly List<IPhenotype> Elites;
@@ -32,12 +33,15 @@ namespace Eval.Core
         protected IAdultSelection AdultSelection;
         protected IRandomNumberGenerator RNG;
 
-        public EA(IEAConfiguration configuration)
+        public EA(IEAConfiguration configuration, IRandomNumberGenerator rng)
         {
             EAConfiguration = configuration;
+            RNG = rng;
 
             PopulationStatistics = new List<PopulationStatistics>();
             Elites = new List<IPhenotype>(EAConfiguration.Elites >= 1 ? EAConfiguration.Elites : 0);
+            AdultSelection = CreateAdultSelection();
+            ParentSelection = CreateParentSelection();
 
             if (EAConfiguration.WorkerThreads > 1)
             {
@@ -62,6 +66,38 @@ namespace Eval.Core
             return population;
         }
 
+        protected virtual IAdultSelection CreateAdultSelection()
+        {
+            switch (EAConfiguration.AdultSelectionType)
+            {
+                case AdultSelectionType.GenerationalMixing:
+                    return new GenerationalMixingAdultSelection(RNG);
+                case AdultSelectionType.GenerationalReplacement:
+                    return new GenerationalReplacementAdultSelection();
+                case AdultSelectionType.Overproduction:
+                    return new OverproductionAdultSelection(RNG);
+                default:
+                    throw new NotImplementedException($"AdultSelectionType {EAConfiguration.AdultSelectionType}");
+            }
+        }
+
+        protected virtual IParentSelection CreateParentSelection()
+        {
+            switch (EAConfiguration.ParentSelectionType)
+            {
+                case ParentSelectionType.FitnessProportionate:
+                    return new ProportionateParentSelection();
+                case ParentSelectionType.Rank:
+                    return new RankParentSelection();
+                case ParentSelectionType.SigmaScaling:
+                    return new SigmaScalingParentSelection();
+                case ParentSelectionType.Tournament:
+                    return new TournamentParentSelection(EAConfiguration);
+                default:
+                    throw new NotImplementedException($"ParentSelectionType {EAConfiguration.ParentSelectionType}");
+            }
+        }
+
         public EAResult Evolve()
         {
             var population = CreateInitialPopulation(EAConfiguration.PopulationSize);
@@ -80,7 +116,7 @@ namespace Eval.Core
                 if (IsBetterThan(generationBest, Best))
                 {
                     Best = generationBest;
-                    NewBestFitnessEvent(Best);
+                    NewBestFitnessEvent?.Invoke(Best);
                 }
                 
                 CalculateStatistics(population);
@@ -89,7 +125,7 @@ namespace Eval.Core
                 {
                     break;
                 }
-                NewGenerationEvent(generation);
+                NewGenerationEvent?.Invoke(generation);
 
                 // TODO: extract elites
                 Elites.Clear();
@@ -163,7 +199,13 @@ namespace Eval.Core
             }
             if (generation >= EAConfiguration.MaximumGenerations)
             {
-                GenerationLimitReachedEvent(generation);
+                GenerationLimitReachedEvent?.Invoke(generation);
+                return false;
+            }
+            if ((EAConfiguration.Mode == EAMode.MaximizeFitness && Best.Fitness >= EAConfiguration.TargetFitness) ||
+                (EAConfiguration.Mode == EAMode.MinimizeFitness && Best.Fitness <= EAConfiguration.TargetFitness))
+            {
+                FitnessLimitReachedEvent?.Invoke(Best.Fitness);
                 return false;
             }
             return true;
@@ -175,6 +217,7 @@ namespace Eval.Core
                 return;
 
             var popstats = population.CalculatePopulationStatistics();
+            PopulationStatisticsCalculated?.Invoke(popstats);
             PopulationStatistics.Add(popstats);
         }
 
@@ -185,6 +228,7 @@ namespace Eval.Core
                 foreach (var p in population)
                 {
                     p.Evaluate();
+                    PhenotypeEvaluatedEvent?.Invoke(p);
                 }
             }
             else
@@ -200,6 +244,7 @@ namespace Eval.Core
         {
             var pheno = state as IPhenotype;
             pheno.Evaluate();
+            PhenotypeEvaluatedEvent?.Invoke(pheno);
         }
     }
 
