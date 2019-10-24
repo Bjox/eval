@@ -5,49 +5,22 @@ using Eval.Core.Selection.Parent;
 using Eval.Core.Util.EARandom;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace Eval.Test.Unit.Selection.Parent
 {
-    class TestPhenotype : Phenotype
-    {
-        private readonly double _mockedFitness;
-        public int Index { get; }
-
-        public TestPhenotype(int index, double mockedFitness)
-            : base(new Mock<IGenotype>().Object)
-        {
-            Index = index;
-            _mockedFitness = mockedFitness;
-            Evaluate();
-        }
-
-        protected override double CalculateFitness()
-        {
-            return _mockedFitness;
-        }
-    }
-
     [TestClass]
     public class RankParentSelectionTests
     {
-        private IRandomNumberGenerator random;
-
-        [TestInitialize]
-        public void TestInitialize()
-        {
-            random = new DefaultRandomNumberGenerator("seed".GetHashCode());
-        }
-
         [TestMethod]
-        public void VerifySelectionProbability()
+        public void RankParentSelection_VerifySelectionProbability()
         {
+            var random = new DefaultRandomNumberGenerator("seed".GetHashCode());
             var population = new Population(11);
             var index = 0;
             population.Fill(() => new TestPhenotype(index++, index * index * index * 0.1));
             population.Sort(EAMode.MaximizeFitness);
 
-            var selection = new RankParentSelection(0, 1);
+            var selection = new RankParentSelection(new EAConfiguration { RankSelectionMinProbability = 0, RankSelectionMaxProbability = 1 });
             var selected = selection.SelectParents(population, 275000, EAMode.MaximizeFitness, random);
 
             var bucket = new int[population.Size];

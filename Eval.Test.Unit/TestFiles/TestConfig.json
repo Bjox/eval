@@ -12,5 +12,7 @@
     "TargetFitness": 1.0,
     "Mode": "MaximizeFitness",
     "Elites": 1,
-    "ReevaluateElites": true
+    "ReevaluateElites": true,
+    "RankSelectionMinProbability": 0.5,
+    "RankSelectionMaxProbability": 1.5
 }

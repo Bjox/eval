@@ -454,6 +454,14 @@ namespace Eval.Test.Unit.Models
             population.IsSorted.Should().BeFalse();
         }
 
+        private static Mock<IPhenotype> CreatePhenotypeMock(double fitnessSetup)
+        {
+            var pmock = new Mock<IPhenotype>();
+            pmock.SetupGet(p => p.Fitness).Returns(fitnessSetup);
+            pmock.SetupGet(p => p.IsEvaluated).Returns(true);
+            return pmock;
+        }
+
         [TestMethod]
         public void PopulationStatisticsTest()
         {
@@ -469,14 +477,6 @@ namespace Eval.Test.Unit.Models
             stats.AverageFitness.Should().Be(2.0);
             stats.VarianceFitness.Should().Be(2.0);
             stats.StandardDeviationFitness.Should().BeApproximately(1.4142135623, 1e-10);
-        }
-
-        private static Mock<IPhenotype> CreatePhenotypeMock(double fitnessSetup)
-        {
-            var pmock = new Mock<IPhenotype>();
-            pmock.SetupGet(p => p.Fitness).Returns(fitnessSetup);
-            pmock.SetupGet(p => p.IsEvaluated).Returns(true);
-            return pmock;
         }
     }
 

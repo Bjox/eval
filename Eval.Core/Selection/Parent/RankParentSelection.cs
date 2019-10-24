@@ -16,15 +16,19 @@ namespace Eval.Core.Selection.Parent
         private readonly double _min;
         private readonly double _max;
 
-        public RankParentSelection(double minProbability, double maxProbability) // TODO: use EAConfig here
+        public RankParentSelection(IEAConfiguration configuration) // TODO: use EAConfig here
         {
-            _min = minProbability;
-            _max = maxProbability;
+            _min = configuration.RankSelectionMinProbability;
+            _max = configuration.RankSelectionMaxProbability;
         }
 
+        /// <summary>
+        /// Uses the default min and max probablities.
+        /// </summary>
         public RankParentSelection()
-            : this(Min, Max)
         {
+            _min = Min;
+            _max = Max;
         }
 
         public IEnumerable<(IPhenotype, IPhenotype)> SelectParents(Population population, int n, EAMode mode, IRandomNumberGenerator random)

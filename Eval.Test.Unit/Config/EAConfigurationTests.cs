@@ -33,11 +33,13 @@ namespace Eval.Test.Unit.Config
     ""TargetFitness"": 1.0,
     ""Mode"": ""MaximizeFitness"",
     ""Elites"": 1,
-    ""ReevaluateElites"": true
+    ""ReevaluateElites"": true,
+    ""RankSelectionMinProbability"": 0.5,
+    ""RankSelectionMaxProbability"": 1.5
 }";
 
             var config = EAConfiguration.ParseFromJsonString(json);
-
+            
             config.PopulationSize.Should().Be(100);
             config.OverproductionFactor.Should().Be(1.5);
             config.MaximumGenerations.Should().Be(500);
@@ -52,6 +54,8 @@ namespace Eval.Test.Unit.Config
             config.Mode.Should().Be(EAMode.MaximizeFitness);
             config.Elites.Should().Be(1);
             config.ReevaluateElites.Should().BeTrue();
+            config.RankSelectionMinProbability.Should().Be(0.5);
+            config.RankSelectionMaxProbability.Should().Be(1.5);
         }
 
         [TestMethod]

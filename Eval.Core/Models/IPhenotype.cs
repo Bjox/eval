@@ -1,6 +1,8 @@
-﻿namespace Eval.Core.Models
+﻿using System;
+
+namespace Eval.Core.Models
 {
-    public interface IPhenotype
+    public interface IPhenotype : IComparable<IPhenotype>
     {
         bool IsEvaluated { get; }
         IGenotype Genotype { get; }

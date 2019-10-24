@@ -24,5 +24,25 @@ namespace Eval.Core.Util
         {
             return (x % m + m) % m;
         }
+
+        /// <summary>
+        /// Computes the standard deviation of a sequence double values.
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static double StandardDeviation(this IEnumerable<double> values)
+        {
+            double M = 0.0;
+            double S = 0.0;
+            int k = 1;
+            foreach (double value in values)
+            {
+                double tmpM = M;
+                M += (value - tmpM) / k;
+                S += (value - tmpM) * (value - M);
+                k++;
+            }
+            return Math.Sqrt(S / (k - 1));
+        }
     }
 }

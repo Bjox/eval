@@ -25,6 +25,8 @@ namespace Eval.Core.Config
         public EAMode Mode { get; set; }
         public int Elites { get; set; }
         public bool ReevaluateElites { get; set; }
+        public double RankSelectionMinProbability { get; set; }
+        public double RankSelectionMaxProbability { get; set; }
         public bool CalculateStatistics { get; set; }
         public int WorkerThreads { get; set; }
         public int IOThreads { get; set; }
