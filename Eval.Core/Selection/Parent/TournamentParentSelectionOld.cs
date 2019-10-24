@@ -38,20 +38,11 @@ namespace Eval.Core.Selection.Parent
 
         private IPhenotype SelectOne(Population population, EAMode mode, IRandomNumberGenerator random)
         {
-            // comment out this shit to "simulate" the java-eval tournament selection
-            //var popclone = new Population(population.Size);
-            //for (int i = 0; i < popclone.Size; i++)
-            //{
-            //    popclone.Add(population[i]);
-            //}
-
             List<IPhenotype> pool = new List<IPhenotype>(_tournamentSize);
             for (int i = 0; i < _tournamentSize; i++)
             {
                 pool.Add(population.DrawRandom(random));
             }
-
-            //pool.Sort(); // and this
 
             if (random.NextDouble() < _prob)
             {

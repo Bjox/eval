@@ -25,7 +25,8 @@ namespace Eval.Core.Config
         public EAMode Mode { get; set; }
         public int Elites { get; set; }
         public bool ReevaluateElites { get; set; }
-
+        public double RankSelectionMinProbability { get; set; }
+        public double RankSelectionMaxProbability { get; set; }
 
         public static EAConfiguration ReadConfigurationFromFile(string filePath)
         {

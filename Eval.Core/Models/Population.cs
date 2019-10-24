@@ -51,11 +51,7 @@ namespace Eval.Core.Models
 
         public void Add(IPhenotype phenotype)
         {
-            if (phenotype == null)
-            {
-                throw new ArgumentNullException("phenotype");
-            }
-            ThrowIfAddOnFull();
+            ThrowIfNullOrFull(phenotype);
             _population[_index++] = phenotype;
 
             IsFilled = _index == _population.Length;
@@ -147,17 +143,19 @@ namespace Eval.Core.Models
             }
         }
 
-        private void ThrowIfAddOnFull()
+        private void ThrowIfNullOrFull(IPhenotype toAdd)
         {
+            if (toAdd == null)
+                throw new ArgumentNullException("phenotype");
             if (Count >= _population.Length)
                 throw new InvalidOperationException("Population is full");
         }
 
         public IEnumerator<IPhenotype> GetEnumerator()
         {
-            foreach (var individual in _population.Where(p => p != null))
+            for (int i = 0; i < Count; i++)
             {
-                yield return individual;
+                yield return _population[i];
             }
         }
 

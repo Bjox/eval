@@ -21,5 +21,7 @@ namespace Eval.Core.Config
         EAMode Mode { get; }
         int Elites { get; }
         bool ReevaluateElites { get; }
+        double RankSelectionMinProbability { get; }
+        double RankSelectionMaxProbability { get; }
     }
 }
