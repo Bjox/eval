@@ -1,4 +1,7 @@
 ﻿using Eval.Core.Util.EARandom;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Eval.Core.Models
 {
@@ -43,6 +46,16 @@ namespace Eval.Core.Models
                 return (char)random.Next(65, 91); // A = 65, Z = 90
             }
             return element;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is CharGenotype genotype && Enumerable.SequenceEqual(Chars, genotype.Chars);
+        }
+
+        public override int GetHashCode()
+        {
+            return -967413158 + EqualityComparer<char[]>.Default.GetHashCode(Chars);
         }
     }
 }

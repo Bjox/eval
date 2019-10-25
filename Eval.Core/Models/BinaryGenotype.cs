@@ -1,6 +1,7 @@
 ﻿using Eval.Core.Util;
 using Eval.Core.Util.EARandom;
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Eval.Core.Models
@@ -42,6 +43,20 @@ namespace Eval.Core.Models
         protected override bool MutateElement(bool element, double factor, IRandomNumberGenerator random)
         {
             return random.NextDouble() < factor ? !element : element;
+        }
+
+        public override bool Equals(object other)
+        {
+            if (other == null || !GetType().Equals(other.GetType()))
+            {
+                return false;
+            }
+            return Bits.Equals(((BinaryGenotype) other).Bits);
+        }
+
+        public override int GetHashCode()
+        {
+            return -943821695 + EqualityComparer<BitArrayList>.Default.GetHashCode(Bits);
         }
     }
 }

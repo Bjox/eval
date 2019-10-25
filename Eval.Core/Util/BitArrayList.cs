@@ -6,7 +6,7 @@ namespace Eval.Core.Util
 {
     public class BitArrayList : IList<bool>
     {
-        public BitArray BitArray { get; }
+        public BitArray BitArray { get; } // TODO: Optimize: create own implementation of BitArray
         public int Count => BitArray.Count;
         public bool IsReadOnly => BitArray.IsReadOnly;
 
@@ -44,6 +44,32 @@ namespace Eval.Core.Util
             return GetEnumerator();
         }
 
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            var other = (BitArrayList)obj;
+            if (Count != other.Count)
+            {
+                return false;
+            }
+            for (int i = 0; i < Count; i++)
+            {
+                if (BitArray[i] != other.BitArray[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return -1593857355 + EqualityComparer<BitArray>.Default.GetHashCode(BitArray);
+        }
+
         public void CopyTo(bool[] array, int arrayIndex)
         {
             throw new NotImplementedException();
@@ -78,6 +104,5 @@ namespace Eval.Core.Util
         {
             throw new NotImplementedException();
         }
-
     }
 }

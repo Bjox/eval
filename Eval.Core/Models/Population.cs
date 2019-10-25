@@ -14,8 +14,9 @@ namespace Eval.Core.Models
         /// A sorted population will always have the best fitness (lowest or highest) at index 0.
         /// </summary>
         public bool IsSorted { get; private set; }
-        private int _index;
+
         private readonly IPhenotype[] _population;
+        private int _index;
 
         public Population(int size)
         {

@@ -12,7 +12,7 @@ using Moq;
 namespace Eval.Test.Unit.Models
 {
     [TestClass]
-    public class BinaryGenotypeTests // TODO: test that clone creates deep copy
+    public class BinaryGenotypeTests
     {
         private readonly int genoLength = 10;
         private BinaryGenotype g1;

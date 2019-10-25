@@ -9,7 +9,7 @@ namespace Eval.Core.Models
     /// </summary>
     /// <typeparam name="AType">The array type</typeparam>
     /// <typeparam name="EType">The element type</typeparam>
-    public abstract class ArrayGenotype<AType, EType> : IGenotype, IReadOnlyList<EType> where AType : IList<EType>
+    public abstract class ArrayGenotype<AType, EType> : Genotype, IReadOnlyList<EType> where AType : IList<EType>
     {
         public int Count => Elements.Count;
 
@@ -41,7 +41,7 @@ namespace Eval.Core.Models
             return GetEnumerator();
         }
 
-        public IGenotype CrossoverWith(IGenotype other, CrossoverType crossover, IRandomNumberGenerator random)
+        public override IGenotype CrossoverWith(IGenotype other, CrossoverType crossover, IRandomNumberGenerator random)
         {
             switch (crossover)
             {
@@ -52,7 +52,7 @@ namespace Eval.Core.Models
             }
         }
 
-        public IGenotype Clone()
+        public override IGenotype Clone()
         {
             var newElements = CreateArrayTypeOfLength(Count);
             for (int i = 0; i < Count; i++)
@@ -62,7 +62,7 @@ namespace Eval.Core.Models
             return CreateNewGenotype(newElements);
         }
 
-        public virtual void Mutate(double probability, IRandomNumberGenerator random)
+        public override void Mutate(double probability, IRandomNumberGenerator random)
         {
             for (int i = 0; i < Count; i++)
             {
