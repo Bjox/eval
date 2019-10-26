@@ -27,6 +27,10 @@ namespace Eval.Core.Config
         public bool ReevaluateElites { get; set; }
         public double RankSelectionMinProbability { get; set; }
         public double RankSelectionMaxProbability { get; set; }
+        public bool CalculateStatistics { get; set; }
+        public int WorkerThreads { get; set; }
+        public int IOThreads { get; set; } 
+
 
         public static EAConfiguration ReadConfigurationFromFile(string filePath)
         {

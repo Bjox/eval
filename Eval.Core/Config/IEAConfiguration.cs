@@ -105,5 +105,8 @@ namespace Eval.Core.Config
         /// Default value = 1.5
         /// </summary>
         double RankSelectionMaxProbability { get; }
+        bool CalculateStatistics { get; }
+        int WorkerThreads { get; }
+        int IOThreads { get; }
     }
 }

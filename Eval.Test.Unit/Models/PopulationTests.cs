@@ -461,6 +461,23 @@ namespace Eval.Test.Unit.Models
             pmock.SetupGet(p => p.IsEvaluated).Returns(true);
             return pmock;
         }
+
+        [TestMethod]
+        public void PopulationStatisticsTest()
+        {
+            population = new Population(5);
+            for (int i = 0; i < 5; i++)
+            {
+                population.Add(CreatePhenotypeMock(i).Object);
+            }
+
+            var stats = population.CalculatePopulationStatistics();
+            stats.MaxFitness.Should().Be(4.0);
+            stats.MinFitness.Should().Be(0.0);
+            stats.AverageFitness.Should().Be(2.0);
+            stats.VarianceFitness.Should().Be(2.0);
+            stats.StandardDeviationFitness.Should().BeApproximately(1.4142135623, 1e-10);
+        }
     }
 
 }

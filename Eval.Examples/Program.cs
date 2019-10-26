@@ -10,7 +10,9 @@ namespace Eval.Examples
     {
         static void Main(string[] args)
         {
-
+            // Examples:
+            //OneMaxEA.Run();
+            LOLZEA.Run();
         }
     }
 }

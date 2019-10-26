@@ -197,6 +197,44 @@ namespace Eval.Core.Models
             return best;
         }
 
+        public PopulationStatistics CalculatePopulationStatistics()
+        {
+            ThrowIfNotFilled();
+
+            var fitnessMax = double.MinValue;
+            var fitnessMin = double.MaxValue;
+            var fitnessSum = 0.0;
+            var avg = 0.0;
+            var m2 = 0.0;
+            
+            for (int i = 0; i < Count; i++)
+            {
+                var p = _population[i];
+                fitnessSum += p.Fitness;
+                fitnessMax = Math.Max(fitnessMax, p.Fitness);
+                fitnessMin = Math.Min(fitnessMin, p.Fitness);
+
+                var d = p.Fitness - avg;
+                avg += d / (i + 1);
+                var d2 = p.Fitness - avg;
+                m2 += d * d2;
+            }
+
+            var variance = m2 / Count;
+            var sampleVariance = m2 / (Count - 1);
+            var std = Math.Sqrt(variance);
+
+            return new PopulationStatistics
+            {
+                AverageFitness = avg,
+                MaxFitness = fitnessMax,
+                MinFitness = fitnessMin,
+                StandardDeviationFitness = std,
+                VarianceFitness = variance
+            };
+        }
+        
+
         /// <summary>
         /// Creates a probability selector according to the provided mode.
         /// The returned selector does not automatically reflect changes to
