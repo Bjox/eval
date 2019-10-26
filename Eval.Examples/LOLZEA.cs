@@ -14,49 +14,49 @@ using System.Threading.Tasks;
 
 namespace Eval.Examples
 {
-    class OneMaxPhenotype : Phenotype
+    class LOLZPhenotype : Phenotype
     {
-        private int onecount;
-        private int[] values;
+        private int _Z;
+        private int _lolzcount;
         
-        public OneMaxPhenotype(IGenotype genotype)
+        public LOLZPhenotype(IGenotype genotype, int z)
             : base(genotype)
         {
-
+            _Z = z;
         }
 
         protected override double CalculateFitness()
         {
             BinaryGenotype geno = (BinaryGenotype)Genotype;
-            onecount = 0;
-            values = new int[geno.Bits.Count];
-            for (int i = 0; i < values.Length; i++)
+            bool prefix = geno.Bits[0];
+            int lolz = 0;
+            
+            for (int i = 0; i < geno.Bits.Count; i++)
             {
-                values[i] = geno.Bits[i] ? 1 : 0;
-                onecount += geno.Bits[i] ? 1 : 0;
+                if (geno.Bits[i] != prefix)
+                    break;
+                lolz++;
             }
 
-            int value = 0;
-            foreach (int n in values)
-            {
-                value += n;
-            }
+            if (!prefix && lolz > _Z)
+                lolz = _Z;
+            _lolzcount = lolz;
 
-            return value / (double)values.Length;
+            return lolz / (double)geno.Bits.Count;
         }
 
         public override string ToString()
         {
-            return $"[{((BinaryGenotype)Genotype).ToBitString()}]";
+            return $"[{((BinaryGenotype)Genotype).ToBitString()}]  lolz={_lolzcount}";
         }
     }
 
-    public class OneMaxEA : EA
+    public class LOLZEA : EA
     {
-        private int _bitcount = 50;
-        
+        private int _bitcount = 40;
+        private int _z = 21;
 
-        public OneMaxEA(IEAConfiguration config, IRandomNumberGenerator rng) 
+        public LOLZEA(IEAConfiguration config, IRandomNumberGenerator rng) 
             : base(config, rng)
         {
             
@@ -64,7 +64,7 @@ namespace Eval.Examples
 
         protected override IPhenotype CreatePhenotype(IGenotype genotype)
         {
-            var phenotype = new OneMaxPhenotype(genotype);
+            var phenotype = new LOLZPhenotype(genotype, _z);
             return phenotype;
         }
 
@@ -72,8 +72,10 @@ namespace Eval.Examples
         {
             BinaryGenotype g = new BinaryGenotype(_bitcount);
             for (int i = 0; i < _bitcount; i++)
+            {
                 g.Bits[i] = RNG.NextBool();
-            OneMaxPhenotype p = new OneMaxPhenotype(g);
+            }
+            LOLZPhenotype p = new LOLZPhenotype(g, _z);
             return p;
         }
 
@@ -84,12 +86,12 @@ namespace Eval.Examples
             {
                 PopulationSize = 100,
                 OverproductionFactor = 2.0,
-                MaximumGenerations = 100,
+                MaximumGenerations = 100000,
                 CrossoverType = CrossoverType.OnePoint,
                 AdultSelectionType = AdultSelectionType.GenerationalMixing,
                 ParentSelectionType = ParentSelectionType.Tournament,
                 CrossoverRate = 0.9,
-                MutationRate = 0.01,
+                MutationRate = 0.8,
                 TournamentSize = 10,
                 TournamentProbability = 0.8,
                 TargetFitness = 1.0,
@@ -98,26 +100,26 @@ namespace Eval.Examples
                 CalculateStatistics = true
             };
 
-            var onemaxEA = new OneMaxEA(config, new DefaultRandomNumberGenerator());
+            var lolzea = new LOLZEA(config, new DefaultRandomNumberGenerator());
 
             var stopwatchtot = new Stopwatch();
             var stopwatchgen = new Stopwatch();
 
             PopulationStatistics currentStats = new PopulationStatistics();
             
-            onemaxEA.PopulationStatisticsCalculated += (stats) =>
+            lolzea.PopulationStatisticsCalculated += (stats) =>
             {
                 currentStats = stats;
             };
-            onemaxEA.NewGenerationEvent += (gen) => {
+            lolzea.NewGenerationEvent += (gen) => {
                 //PrintProgressBar(gen, config.MaximumGenerations);
 
                 double progress = (gen / (double)config.MaximumGenerations) * 100.0;
                 var totruntime = stopwatchtot.Elapsed;
                 var genruntime = stopwatchgen.Elapsed;
                 Console.WriteLine();
-                Console.WriteLine(string.Format("G# {0}    best_f: {1:F3}    avg_f: {2:F3}    SD: {3:F3}    Progress: {4,5:F2}    Gen: {5}   Tot: {6}", gen, onemaxEA.Best.Fitness, currentStats.AverageFitness, currentStats.StandardDeviationFitness, progress, genruntime, totruntime));
-                Console.WriteLine("Generation winner: " + ((BinaryGenotype)onemaxEA.Best?.Genotype).ToBitString());
+                Console.WriteLine(string.Format("G# {0}    best_f: {1:F3}    avg_f: {2:F3}    SD: {3:F3}    Progress: {4,5:F2}    Gen: {5}   Tot: {6}", gen, lolzea.Best.Fitness, currentStats.AverageFitness, currentStats.StandardDeviationFitness, progress, genruntime, totruntime));
+                Console.WriteLine($"Generation winner: {lolzea.Best.ToString()}");
 
                 stopwatchgen.Restart();
             };
@@ -125,7 +127,7 @@ namespace Eval.Examples
             stopwatchtot.Start();
             stopwatchgen.Start();
 
-            var res = onemaxEA.Evolve();
+            var res = lolzea.Evolve();
 
             Console.WriteLine("\n\nDone!");
             Console.WriteLine($"Winner: {res.Winner}");
@@ -141,8 +143,7 @@ namespace Eval.Examples
             sb.Append(gen);
             Console.Write(sb.ToString());
             Console.Out.Flush();
-        }
-            
+        } 
         
     }
 }

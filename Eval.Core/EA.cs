@@ -59,7 +59,7 @@ namespace Eval.Core
         /// </summary>
         /// <param name="populationSize"></param>
         /// <returns></returns>
-        public virtual Population CreateInitialPopulation(int populationSize)
+        protected virtual Population CreateInitialPopulation(int populationSize)
         {
             var population = new Population(populationSize);
             population.Fill(CreateRandomPhenotype);
@@ -107,17 +107,20 @@ namespace Eval.Core
             population.Evaluate(EAConfiguration.ReevaluateElites, PhenotypeEvaluatedEvent);
 
             Best = null;
-            var generation = 0;
+            var generation = 1;
 
             while (true)
             {
                 population.Sort(EAConfiguration.Mode);
                 var generationBest = population.First();
+
                 if (IsBetterThan(generationBest, Best))
                 {
                     Best = generationBest;
                     NewBestFitnessEvent?.Invoke(Best);
                 }
+
+                NewGenerationEvent?.Invoke(generation);
                 
                 CalculateStatistics(population);
 
@@ -125,17 +128,13 @@ namespace Eval.Core
                 {
                     break;
                 }
-                NewGenerationEvent?.Invoke(generation);
-
-                // TODO: extract elites
+                
                 Elites.Clear();
                 for (int i = 0; i < EAConfiguration.Elites; i++)
                     Elites.Add(population[i]);
-
-                // TODO: parent selection
+                
                 var parents = ParentSelection.SelectParents(population, offspringSize - Elites.Count, EAConfiguration.Mode, RNG);
-
-                // TODO: reproduction with crossover and mutation, remember overproduction if configured
+                
                 offspring.Clear();
                 foreach (var couple in parents)
                 {
@@ -152,14 +151,11 @@ namespace Eval.Core
                     var child = CreatePhenotype(newgeno);
                     offspring.Add(child);
                 }
-
-                // TODO: evaluate offspring
+                
                 CalculateFitnesses(offspring);
-
-                // TODO: adult selection
+                
                 AdultSelection.SelectAdults(offspring, population, EAConfiguration.PopulationSize - Elites.Count, EAConfiguration.Mode);
-
-                // TODO: reintroduce elites
+                
                 for (int i = 0; i < EAConfiguration.Elites; i++)
                     population.Add(Elites[i]);
 
@@ -233,18 +229,27 @@ namespace Eval.Core
             }
             else
             {
-                foreach (var p in population)
+                using (var countdownEvent = new CountdownEvent(population.Count))
                 {
-                    ThreadPool.QueueUserWorkItem(FitnessWorker, p);
+                    foreach (var p in population)
+                    {
+                        ThreadPool.QueueUserWorkItem(FitnessWorker, new object[] { p, countdownEvent });
+                    }
+                    countdownEvent.Wait();
                 }
             }
         }
 
         private void FitnessWorker(object state)
         {
-            var pheno = state as IPhenotype;
+            var input = state as object[];
+            var pheno = input[0] as IPhenotype;
+            var countdownEvent = input[1] as CountdownEvent;
+
             pheno.Evaluate();
             PhenotypeEvaluatedEvent?.Invoke(pheno);
+
+            countdownEvent.Signal();
         }
     }
 
