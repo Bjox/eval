@@ -39,7 +39,7 @@ namespace Eval.Core
             RNG = rng;
 
             PopulationStatistics = new List<PopulationStatistics>();
-            Elites = new List<IPhenotype>(EAConfiguration.Elites >= 1 ? EAConfiguration.Elites : 0);
+            Elites = new List<IPhenotype>(Math.Max(EAConfiguration.Elites,0));
             AdultSelection = CreateAdultSelection();
             ParentSelection = CreateParentSelection();
 
@@ -101,13 +101,13 @@ namespace Eval.Core
         public EAResult Evolve()
         {
             var population = CreateInitialPopulation(EAConfiguration.PopulationSize);
-            var offspringSize = (int)(EAConfiguration.PopulationSize * (EAConfiguration.OverproductionFactor < 1 ? 1 : EAConfiguration.OverproductionFactor));
+            var offspringSize = (int)(EAConfiguration.PopulationSize * Math.Max(EAConfiguration.OverproductionFactor, 1));
             var offspring = new Population(offspringSize);
 
             population.Evaluate(EAConfiguration.ReevaluateElites, PhenotypeEvaluatedEvent);
+            var generation = 1;
 
             Best = null;
-            var generation = 1;
 
             while (true)
             {
@@ -190,7 +190,7 @@ namespace Eval.Core
         {
             if (Abort)
             {
-                AbortedEvent();
+                AbortedEvent?.Invoke();
                 return false;
             }
             if (generation >= EAConfiguration.MaximumGenerations)

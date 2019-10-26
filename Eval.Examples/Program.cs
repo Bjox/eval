@@ -12,7 +12,7 @@ namespace Eval.Examples
         {
             // Examples:
             //OneMaxEA.Run();
-            //LOLZEA.Run();
+            LOLZEA.Run();
         }
     }
 }

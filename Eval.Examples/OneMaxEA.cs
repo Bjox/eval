@@ -51,6 +51,9 @@ namespace Eval.Examples
         }
     }
 
+    /// <summary>
+    /// Optimizes towards a bitstring containing only ones 
+    /// </summary>
     public class OneMaxEA : EA
     {
         private int _bitcount = 50;

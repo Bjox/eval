@@ -29,7 +29,7 @@ namespace Eval.Test.Unit.EATests
         }
 
         [TestMethod]
-        public void TestEA()
+        public void EvolveShouldCallCreateMethodsCorrectNumberOfTimes()
         {
             _ea.Evolve();
             _ea.CreateRandomPhenotypeCount.Should().Be(10);
@@ -37,7 +37,7 @@ namespace Eval.Test.Unit.EATests
         }
 
         [TestMethod]
-        public void TestEASeeded()
+        public void SeededEvolveShouldCallCreateMethodsCorrectNumberOfTimes()
         {
             var _ea = new TestEASeeded(_config, new DefaultRandomNumberGenerator());
             _ea.Evolve();

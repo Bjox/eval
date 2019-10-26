@@ -27,9 +27,9 @@ namespace Eval.Examples
 
         protected override double CalculateFitness()
         {
-            BinaryGenotype geno = (BinaryGenotype)Genotype;
-            bool prefix = geno.Bits[0];
-            int lolz = 0;
+            var geno = (BinaryGenotype)Genotype;
+            var prefix = geno.Bits[0];
+            var lolz = 0;
             
             for (int i = 0; i < geno.Bits.Count; i++)
             {
@@ -51,6 +51,12 @@ namespace Eval.Examples
         }
     }
 
+    /// <summary>
+    /// Leading Ones, Leading Zeroes.
+    /// Optimizes towards a bitstring containing only ones, 
+    /// but introduces a local maxima when the bitstring has leading zeroes.
+    /// With leading zeroes the fitness is only evaluated up to a given point Z in the bitstring.
+    /// </summary>
     public class LOLZEA : EA
     {
         private int _bitcount = 40;
@@ -70,12 +76,12 @@ namespace Eval.Examples
 
         protected override IPhenotype CreateRandomPhenotype()
         {
-            BinaryGenotype g = new BinaryGenotype(_bitcount);
+            var g = new BinaryGenotype(_bitcount);
             for (int i = 0; i < _bitcount; i++)
             {
                 g.Bits[i] = RNG.NextBool();
             }
-            LOLZPhenotype p = new LOLZPhenotype(g, _z);
+            var p = new LOLZPhenotype(g, _z);
             return p;
         }
 
@@ -114,7 +120,7 @@ namespace Eval.Examples
             lolzea.NewGenerationEvent += (gen) => {
                 //PrintProgressBar(gen, config.MaximumGenerations);
 
-                double progress = (gen / (double)config.MaximumGenerations) * 100.0;
+                var progress = (gen / (double)config.MaximumGenerations) * 100.0;
                 var totruntime = stopwatchtot.Elapsed;
                 var genruntime = stopwatchgen.Elapsed;
                 Console.WriteLine();
