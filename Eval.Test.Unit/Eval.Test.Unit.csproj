@@ -75,11 +75,13 @@
     <Compile Include="Config\EAConfigurationTests.cs" />
     <Compile Include="EA\EATests.cs" />
     <Compile Include="EA\OneMaxEATests.cs" />
+    <Compile Include="Models\AbstractListGenotypeTestBase.cs" />
     <Compile Include="Models\PopulationTests.cs" />
     <Compile Include="Models\PhenotypeTests.cs" />
     <Compile Include="Models\BinaryGenotypeTests.cs" />
     <Compile Include="Models\CharGenotypeTests.cs" />
     <Compile Include="Models\GenotypeTests.cs" />
+    <Compile Include="Models\ArrayGenotypeTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Selection\Adult\GenerationalMixingAdultSelectionTests.cs" />
     <Compile Include="Selection\Adult\GenerationalReplacementAdultSelectionTests.cs" />

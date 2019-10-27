@@ -27,5 +27,15 @@ namespace Eval.Core.Util.EARandom
         {
             return NextDouble() < 0.5;
         }
+
+        public double NextDouble(double maxValue)
+        {
+            return NextDouble() * maxValue;
+        }
+
+        public double NextDouble(double minValue, double maxValue)
+        {
+            return NextDouble() * (maxValue - minValue) + minValue;
+        }
     }
 }

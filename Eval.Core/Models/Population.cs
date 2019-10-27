@@ -9,20 +9,14 @@ namespace Eval.Core.Models
 {
     public class Population : IReadOnlyList<IPhenotype>
     {
+        /// <summary>
+        /// A flag that indiciates if the population is filled.
+        /// </summary>
         public bool IsFilled { get; private set; }
         /// <summary>
         /// A sorted population will always have the best fitness (lowest or highest) at index 0.
         /// </summary>
         public bool IsSorted { get; private set; }
-
-        private readonly IPhenotype[] _population;
-        private int _index;
-
-        public Population(int size)
-        {
-            _population = new IPhenotype[size];
-            _index = 0;
-        }
 
         /// <summary>
         /// Returns the Maxiumum allowed size of the population
@@ -34,6 +28,14 @@ namespace Eval.Core.Models
         /// </summary>
         public int Count => _index;
 
+        private readonly IPhenotype[] _population;
+        private int _index;
+
+        public Population(int size)
+        {
+            _population = new IPhenotype[size];
+            _index = 0;
+        }
 
         public IPhenotype this[int key]
         {
@@ -84,7 +86,7 @@ namespace Eval.Core.Models
                 switch (mode)
                 {
                     case EAMode.MaximizeFitness:
-                        elite = GetMaxFitness();
+                        elite = GetMaxFitness(); // TODO: Optimize: if pop is sorted, we don't need to do this because the best will always be at index 0 (regardless of mode)
                         break;
                     case EAMode.MinimizeFitness:
                         elite = GetMinFitness();
@@ -105,7 +107,6 @@ namespace Eval.Core.Models
             IsFilled = false;
             IsSorted = false;
         }
-
 
         public void Evaluate(bool reevaluate, Action<IPhenotype> phenotypeEvaluatedEvent)
         {

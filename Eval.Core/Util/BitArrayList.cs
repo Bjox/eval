@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Eval.Core.Util
 {
-    public class BitArrayList : IList<bool>
+    public class BitArrayList : IList<bool>, ICloneable
     {
         public BitArray BitArray { get; } // TODO: Optimize: create own implementation of BitArray
         public int Count => BitArray.Count;
@@ -18,6 +18,16 @@ namespace Eval.Core.Util
         public BitArrayList(int length, bool defaultValue)
         {
             BitArray = new BitArray(length, defaultValue);
+        }
+
+        public BitArrayList(bool[] values)
+        {
+            BitArray = new BitArray(values);
+        }
+
+        public BitArrayList(BitArrayList original)
+        {
+            BitArray = new BitArray(original.BitArray);
         }
 
         public bool this[int index]
@@ -68,6 +78,11 @@ namespace Eval.Core.Util
         public override int GetHashCode()
         {
             return -1593857355 + EqualityComparer<BitArray>.Default.GetHashCode(BitArray);
+        }
+
+        public object Clone()
+        {
+            return new BitArrayList(this);
         }
 
         public void CopyTo(bool[] array, int arrayIndex)

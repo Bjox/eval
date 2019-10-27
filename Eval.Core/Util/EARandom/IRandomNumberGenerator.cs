@@ -39,6 +39,25 @@ namespace Eval.Core.Util.EARandom
         /// <param name="buffer"></param>
         void NextBytes(byte[] buffer);
 
+        /// <summary>
+        /// Returns a random boolean value.
+        /// </summary>
+        /// <returns></returns>
         bool NextBool();
+
+        /// <summary>
+        /// Returns a random double value that is greater than or equal to 0.0, and less than the specified max value.
+        /// </summary>
+        /// <param name="maxValue"></param>
+        /// <returns></returns>
+        double NextDouble(double maxValue);
+
+        /// <summary>
+        /// Returns a random double value between that is greater than or equal to minValue, and less than maxValue.
+        /// </summary>
+        /// <param name="minValue"></param>
+        /// <param name="maxValue"></param>
+        /// <returns></returns>
+        double NextDouble(double minValue, double maxValue);
     }
 }

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Eval.Core.Models
 {
-    public class BinaryGenotype : ArrayGenotype<BitArrayList, bool>
+    public class BinaryGenotype : AbstractListGenotype<BitArrayList, bool>
     {
         public BitArrayList Bits => Elements;
 
@@ -35,7 +35,7 @@ namespace Eval.Core.Models
             return new BitArrayList(length);
         }
 
-        protected override ArrayGenotype<BitArrayList, bool> CreateNewGenotype(BitArrayList elements)
+        protected override AbstractListGenotype<BitArrayList, bool> CreateNewGenotype(BitArrayList elements)
         {
             return new BinaryGenotype(elements);
         }
@@ -57,6 +57,16 @@ namespace Eval.Core.Models
         public override int GetHashCode()
         {
             return -943821695 + EqualityComparer<BitArrayList>.Default.GetHashCode(Bits);
+        }
+
+        protected override bool CloneElement(bool element)
+        {
+            return element;
+        }
+
+        public override IGenotype Clone()
+        {
+            return new BinaryGenotype(new BitArrayList(Bits));
         }
     }
 }

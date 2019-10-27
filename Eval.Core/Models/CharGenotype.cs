@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Eval.Core.Models
 {
-    public class CharGenotype : ArrayGenotype<char[], char>
+    public class CharGenotype : AbstractListGenotype<char[], char>
     {
         public char[] Chars => Elements;
 
@@ -34,7 +34,7 @@ namespace Eval.Core.Models
             return new char[length];
         }
 
-        protected override ArrayGenotype<char[], char> CreateNewGenotype(char[] elements)
+        protected override AbstractListGenotype<char[], char> CreateNewGenotype(char[] elements)
         {
             return new CharGenotype(elements);
         }
@@ -56,6 +56,11 @@ namespace Eval.Core.Models
         public override int GetHashCode()
         {
             return -967413158 + EqualityComparer<char[]>.Default.GetHashCode(Chars);
+        }
+
+        protected override char CloneElement(char element)
+        {
+            return element;
         }
     }
 }
