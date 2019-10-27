@@ -90,15 +90,15 @@ namespace Eval.Examples
         {
             var config = new EAConfiguration
             {
-                PopulationSize = 100,
+                PopulationSize = 1000,
                 OverproductionFactor = 2.0,
                 MaximumGenerations = 100000,
                 CrossoverType = CrossoverType.OnePoint,
                 AdultSelectionType = AdultSelectionType.GenerationalMixing,
                 ParentSelectionType = ParentSelectionType.Tournament,
-                CrossoverRate = 0.9,
-                MutationRate = 0.8,
-                TournamentSize = 10,
+                CrossoverRate = 0.75,
+                MutationRate = 0.9,
+                TournamentSize = 2,
                 TournamentProbability = 0.8,
                 TargetFitness = 1.0,
                 Mode = EAMode.MaximizeFitness,

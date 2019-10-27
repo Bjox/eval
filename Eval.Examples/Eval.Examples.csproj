@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="LOLZEA.cs" />
+    <Compile Include="Hamming.cs" />
     <Compile Include="OneMaxEA.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
