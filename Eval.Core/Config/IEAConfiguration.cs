@@ -105,8 +105,22 @@ namespace Eval.Core.Config
         /// Default value = 1.5
         /// </summary>
         double RankSelectionMaxProbability { get; }
+        /// <summary>
+        /// Flag to specify if statistics should be calcualted at each generation.<br></br>
+        /// Default value = true
+        /// </summary>
         bool CalculateStatistics { get; }
+        /// <summary>
+        /// Maximum number of worker threads to use when evaluating population.<br></br>
+        /// Must be greater than or equal to 1<br></br>
+        /// Default value = 1
+        /// </summary>
         int WorkerThreads { get; }
+        /// <summary>
+        /// Maximum number of IO threads to use when evaluating population.<br></br>
+        /// Must be greater than or equal to 1<br></br>
+        /// Default value = 1
+        /// </summary>
         int IOThreads { get; }
     }
 }
