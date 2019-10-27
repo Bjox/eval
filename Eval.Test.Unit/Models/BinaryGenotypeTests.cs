@@ -169,4 +169,10 @@ namespace Eval.Test.Unit.Models
                 .ToBitString().Should().Be("1010101010");
         }
     }
+
+    [TestClass]
+    public class BinaryGenotypeBaseTests : GenotypeTestBase<BinaryGenotype>
+    {
+        protected override BinaryGenotype CreateGenotype => new BinaryGenotype(10);
+    }
 }

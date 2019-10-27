@@ -147,4 +147,10 @@ namespace Eval.Test.Unit.Models
                 .ToCharString().Should().Be("ZAZAZAZAZA");
         }
     }
+
+    [TestClass]
+    public class CharGenotypeBaseTests : GenotypeTestBase<CharGenotype>
+    {
+        protected override CharGenotype CreateGenotype => new CharGenotype(new string('A', 10));
+    }
 }
