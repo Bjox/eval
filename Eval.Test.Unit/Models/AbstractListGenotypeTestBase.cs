@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 namespace Eval.Test.Unit.Models
 {
     /// <summary>
+    /// Extend from this abstract class in order to test a custom genotype inheriting <c>AbstractListGenotype</c>.
     /// </summary>
     /// <typeparam name="GType">The genotype Type being tested</typeparam>
     /// <typeparam name="AType">The array type being used in GType</typeparam>

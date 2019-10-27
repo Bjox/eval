@@ -27,7 +27,7 @@ namespace Eval.Test.Unit.Models
         protected override ArrayGenotype<TestGenoElement> CreateGenotype => new ArrayGenotype<TestGenoElement>(Repeat(() => new TestGenoElement(0), 10).ToArray());
     }
 
-    public class TestGenoElement : GenotypeElement
+    public class TestGenoElement : IGenotypeElement
     {
         public double Value { get; set; }
 
@@ -36,12 +36,12 @@ namespace Eval.Test.Unit.Models
             Value = value;
         }
 
-        public override object Clone()
+        public object Clone()
         {
             return new TestGenoElement(Value);
         }
 
-        public override void Mutate(double factor, IRandomNumberGenerator random)
+        public void Mutate(double factor, IRandomNumberGenerator random)
         {
             Value += factor * random.NextDouble(-1, 1);
         }

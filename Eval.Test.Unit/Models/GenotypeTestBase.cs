@@ -8,6 +8,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Eval.Test.Unit.Models
 {
+    /// <summary>
+    /// Extend from this class in order to test a custom genotype that implements <c>IGenotype</c>.
+    /// </summary>
+    /// <typeparam name="GType">The genotype Type being tested</typeparam>
     [TestClass]
     public abstract class GenotypeTestBase<GType>
         where GType : IGenotype

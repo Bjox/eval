@@ -6,7 +6,6 @@ using Eval.Core.Util.EARandom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace Eval.Core
@@ -38,8 +37,8 @@ namespace Eval.Core
             EAConfiguration = configuration;
             RNG = rng;
 
-            PopulationStatistics = new List<PopulationStatistics>();
-            Elites = new List<IPhenotype>(Math.Max(EAConfiguration.Elites,0));
+            PopulationStatistics = new List<PopulationStatistics>(512);
+            Elites = new List<IPhenotype>(Math.Max(EAConfiguration.Elites, 0));
             AdultSelection = CreateAdultSelection();
             ParentSelection = CreateParentSelection();
 

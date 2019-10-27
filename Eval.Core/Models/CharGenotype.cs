@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Eval.Core.Models
 {
+    /// <summary>
+    /// A character based genotype of fixed length, supporting ASCII characters.
+    /// </summary>
     public class CharGenotype : AbstractListGenotype<char[], char>
     {
         public char[] Chars => Elements;
@@ -43,7 +46,7 @@ namespace Eval.Core.Models
         {
             if (random.NextDouble() < factor)
             {
-                return (char)random.Next(65, 91); // A = 65, Z = 90
+                return (char)random.Next(33, 127); // 33 = '!', 126 = '~'
             }
             return element;
         }

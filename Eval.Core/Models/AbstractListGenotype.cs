@@ -6,6 +6,12 @@ using System.Collections.Generic;
 namespace Eval.Core.Models
 {
     /// <summary>
+    /// Extend from this class when your genotype consist of a collection of elements, and one of the following cases apply:<br></br>
+    /// <list type="bullet">
+    /// <item>Genotype elements are stored in an <c>IList</c>, as opposed to a regular <c>Array</c>.</item>
+    /// <item>Genotype elements are value types, such as <c>struct</c> or a primitive. (However, reference types are also supported).</item>
+    /// </list>
+    /// Subclasses may override <c>Clone()</c>, <c>Mutate()</c> and/or <c>CrossoverWith()</c> for flexibility or optimization purposes.
     /// </summary>
     /// <typeparam name="AType">The array type</typeparam>
     /// <typeparam name="EType">The element type</typeparam>
@@ -75,7 +81,7 @@ namespace Eval.Core.Models
         {
             if (Count != other.Count)
             {
-                throw new ArgumentException("ArrayGenotypes differs in length"); // TODO: support
+                throw new ArgumentException("ArrayGenotypes differs in length"); // TODO: support variable length AbstractListGenotype
             }
 
             var length = Count;
@@ -98,7 +104,7 @@ namespace Eval.Core.Models
         {
             if (Count != other.Count)
             {
-                throw new ArgumentException("ArrayGenotypes differs in length"); // TODO: support
+                throw new ArgumentException("ArrayGenotypes differs in length");
             }
 
             var length = Count;

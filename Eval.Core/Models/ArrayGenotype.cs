@@ -12,16 +12,12 @@ namespace Eval.Core.Models
         void Mutate(double factor, IRandomNumberGenerator random);
     }
 
-    public abstract class GenotypeElement : IGenotypeElement
-    {
-        public abstract object Clone();
-        public abstract override bool Equals(object obj);
-        public abstract override int GetHashCode();
-        public abstract void Mutate(double factor, IRandomNumberGenerator random);
-    }
-
+    /// <summary>
+    /// A genotype represented by objects stored in an <c>Array</c>.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class ArrayGenotype<T> : AbstractListGenotype<T[], T>
-        where T : GenotypeElement
+        where T : IGenotypeElement
     {
         public T[] Objects => Elements;
 
