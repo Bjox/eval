@@ -46,7 +46,7 @@ namespace Eval.Core.Models
         {
             if (random.NextDouble() < factor)
             {
-                return (char)random.Next(33, 127); // 33 = '!', 126 = '~'
+                return (char)random.Next(32, 127); // 32 = ' ', 126 = '~'
             }
             return element;
         }

@@ -82,17 +82,21 @@ namespace Eval.Core.Models
             // O(n)
             if (elitism == 1)
             {
-                IPhenotype elite = null;
-                switch (mode)
+                IPhenotype elite = _population[0];
+
+                if (!IsSorted)
                 {
-                    case EAMode.MaximizeFitness:
-                        elite = GetMaxFitness(); // TODO: Optimize: if pop is sorted, we don't need to do this because the best will always be at index 0 (regardless of mode)
-                        break;
-                    case EAMode.MinimizeFitness:
-                        elite = GetMinFitness();
-                        break;
-                    default:
-                        throw new NotImplementedException(mode.ToString());
+                    switch (mode)
+                    {
+                        case EAMode.MaximizeFitness:
+                            elite = GetMaxFitness();
+                            break;
+                        case EAMode.MinimizeFitness:
+                            elite = GetMinFitness();
+                            break;
+                        default:
+                            throw new NotImplementedException(mode.ToString());
+                    }
                 }
 
                 Clear();

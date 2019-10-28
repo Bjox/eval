@@ -133,7 +133,7 @@ namespace Eval.Core.Models
         protected abstract AbstractListGenotype<AType, EType> CreateNewGenotype(AType elements);
 
         /// <summary>
-        /// Mutates of the specified element, where the provided factor describes the degree og mutation.
+        /// Mutates the specified element, where the provided factor describes the degree of mutation.
         /// The element may be mutated in-place and a reference to itself returned, or a mutated copy may be returned.
         /// </summary>
         /// <param name="element">The element to mutate</param>
