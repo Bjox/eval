@@ -3,6 +3,7 @@ using Eval.Core.Models;
 using Eval.Core.Selection.Adult;
 using Eval.Core.Selection.Parent;
 using Eval.Core.Util.EARandom;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ using System.Threading;
 
 namespace Eval.Core
 {
+
+    [Serializable]
     public abstract class EA
     {
         public IEAConfiguration EAConfiguration { get; set; }
@@ -250,6 +253,20 @@ namespace Eval.Core
             PhenotypeEvaluatedEvent?.Invoke(pheno);
 
             countdownEvent.Signal();
+        }
+
+        public void SaveState(string filename)
+        {
+            var jsonSerializerSettings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.All
+            };
+            var json = JsonConvert.SerializeObject(this, jsonSerializerSettings);
+        }
+
+        public void LoadState(string filename)
+        {
+
         }
     }
 

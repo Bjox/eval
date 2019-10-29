@@ -56,6 +56,17 @@ namespace Eval.Examples
             return newgeno;
         }
 
+        public override bool Equals(object obj)
+        {
+            var genotype = obj as StringGenotype;
+            return genotype != null && str == genotype.str;
+        }
+
+        public override int GetHashCode()
+        {
+            return -1349951472 + EqualityComparer<string>.Default.GetHashCode(str);
+        }
+
         public override void Mutate(double probability, IRandomNumberGenerator random)
         {
             if (random.NextDouble() >= probability)
@@ -83,6 +94,7 @@ namespace Eval.Examples
         {
             return str;
         }
+        
     }
 
     class HammingPhenotype : Phenotype
@@ -116,7 +128,7 @@ namespace Eval.Examples
     /// </summary>
     public class HammingEA : EA
     {
-        public static string TARGET = "HELLO World! how long can you go? This is a really long string";
+        public static string TARGET = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
         public HammingEA(IEAConfiguration config, IRandomNumberGenerator rng) 
             : base(config, rng)

@@ -7,6 +7,8 @@ using System.Linq;
 
 namespace Eval.Core.Models
 {
+
+    [Serializable]
     public class Population : IReadOnlyList<IPhenotype>
     {
         /// <summary>
