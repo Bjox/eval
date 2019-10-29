@@ -16,7 +16,7 @@ namespace Eval.Core.Selection.Parent
         private readonly double _min;
         private readonly double _max;
 
-        public RankParentSelection(IEAConfiguration configuration) // TODO: use EAConfig here
+        public RankParentSelection(IEAConfiguration configuration)
         {
             _min = configuration.RankSelectionMinProbability;
             _max = configuration.RankSelectionMaxProbability;

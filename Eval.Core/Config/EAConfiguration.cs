@@ -45,5 +45,6 @@ namespace Eval.Core.Config
         {
             return JsonConvert.DeserializeObject<EAConfiguration>(json);
         }
+
     }
 }

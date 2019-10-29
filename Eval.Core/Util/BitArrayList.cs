@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace Eval.Core.Util
 {
-    public class BitArrayList : IList<bool>
+    public class BitArrayList : IList<bool>, ICloneable
     {
-        public BitArray BitArray { get; }
+        public BitArray BitArray { get; } // TODO: Optimize: create own implementation of BitArray
         public int Count => BitArray.Count;
         public bool IsReadOnly => BitArray.IsReadOnly;
 
@@ -18,6 +18,16 @@ namespace Eval.Core.Util
         public BitArrayList(int length, bool defaultValue)
         {
             BitArray = new BitArray(length, defaultValue);
+        }
+
+        public BitArrayList(bool[] values)
+        {
+            BitArray = new BitArray(values);
+        }
+
+        public BitArrayList(BitArrayList original)
+        {
+            BitArray = new BitArray(original.BitArray);
         }
 
         public bool this[int index]
@@ -42,6 +52,37 @@ namespace Eval.Core.Util
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null || !GetType().Equals(obj.GetType()))
+            {
+                return false;
+            }
+            var other = (BitArrayList)obj;
+            if (Count != other.Count)
+            {
+                return false;
+            }
+            for (int i = 0; i < Count; i++)
+            {
+                if (BitArray[i] != other.BitArray[i])
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return -1593857355 + EqualityComparer<BitArray>.Default.GetHashCode(BitArray);
+        }
+
+        public object Clone()
+        {
+            return new BitArrayList(this);
         }
 
         public void CopyTo(bool[] array, int arrayIndex)
@@ -78,6 +119,5 @@ namespace Eval.Core.Util
         {
             throw new NotImplementedException();
         }
-
     }
 }

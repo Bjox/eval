@@ -12,15 +12,27 @@ using Moq;
 namespace Eval.Test.Unit.Models
 {
     [TestClass]
-    public class BinaryGenotypeTests
+    public class BinaryGenotypeTests : AbstractListGenotypeTestBase<BinaryGenotype, BitArrayList, bool>
     {
+        protected override BinaryGenotype GetFirstGenotype(Func<Func<bool>, IEnumerable<bool>> elementFactory)
+        {
+            return new BinaryGenotype(new BitArrayList(elementFactory(() => false).ToArray()));
+        }
+
+        protected override BinaryGenotype GetSecondGenotype(Func<Func<bool>, IEnumerable<bool>> elementFactory)
+        {
+            return new BinaryGenotype(new BitArrayList(elementFactory(() => true).ToArray()));
+        }
+
+        // Custom BinaryGenotype tests below this line ----------------------------------------------------
+
         private readonly int genoLength = 10;
         private BinaryGenotype g1;
         private BinaryGenotype g2;
         private Mock<IRandomNumberGenerator> randomMock;
 
         [TestInitialize]
-        public void TestInitialize()
+        public void BinaryGenotypeTests_TestInitialize()
         {
             genoLength.Should().Match(l => l % 2 == 0);
             g1 = new BinaryGenotype(new BitArrayList(genoLength, false)); // All 0's
@@ -29,7 +41,7 @@ namespace Eval.Test.Unit.Models
         }
 
         [TestMethod]
-        public void OnePointCrossover_LeftmostSplitTest()
+        public void BinaryGenotypeTests_OnePointCrossover_LeftmostSplitTest()
         {
             randomMock.Setup(rng => rng.Next(It.IsAny<int>()))
                 .Returns(0);
@@ -42,7 +54,7 @@ namespace Eval.Test.Unit.Models
         }
 
         [TestMethod]
-        public void OnePointCrossover_RightmostSplitTest()
+        public void BinaryGenotypeTests_OnePointCrossover_RightmostSplitTest()
         {
             randomMock.Setup(rng => rng.Next(It.IsAny<int>()))
                 .Returns(genoLength);
@@ -55,7 +67,7 @@ namespace Eval.Test.Unit.Models
         }
 
         [TestMethod]
-        public void OnePointCrossover_MiddleSplitTest()
+        public void BinaryGenotypeTests_OnePointCrossover_MiddleSplitTest()
         {
             randomMock.Setup(rng => rng.Next(It.IsAny<int>()))
                 .Returns(genoLength / 2);
@@ -68,7 +80,7 @@ namespace Eval.Test.Unit.Models
         }
 
         [TestMethod]
-        public void MutateWith1ProbabilityShouldFlipAllBits()
+        public void BinaryGenotypeTests_MutateWith1ProbabilityShouldFlipAllBits()
         {
             var g = new BinaryGenotype(new BitArrayList(10000, false));
 
@@ -78,7 +90,7 @@ namespace Eval.Test.Unit.Models
         }
 
         [TestMethod]
-        public void MutateWith0ProbabilityShouldFlipNoBits()
+        public void BinaryGenotypeTests_MutateWith0ProbabilityShouldFlipNoBits()
         {
             var g = new BinaryGenotype(new BitArrayList(10000, false));
 
@@ -88,7 +100,7 @@ namespace Eval.Test.Unit.Models
         }
 
         [TestMethod]
-        public void MutateShouldFlipBitsProportionalToProbability()
+        public void BinaryGenotypeTests_MutateShouldFlipBitsProportionalToProbability()
         {
             var probabilities = new[] { 0.01, 0.1, 0.3, 0.5, 0.7, 0.99 };
             var n = 100000;
@@ -102,7 +114,7 @@ namespace Eval.Test.Unit.Models
         }
 
         [TestMethod]
-        public void UniformCrossoverAllFromFirst()
+        public void BinaryGenotypeTests_UniformCrossoverAllFromFirst()
         {
             randomMock.Setup(rng => rng.NextBool()).Returns(true);
 
@@ -114,7 +126,7 @@ namespace Eval.Test.Unit.Models
         }
 
         [TestMethod]
-        public void UniformCrossoverAllFromSecond()
+        public void BinaryGenotypeTests_UniformCrossoverAllFromSecond()
         {
             randomMock.Setup(rng => rng.NextBool()).Returns(false);
 
@@ -126,7 +138,7 @@ namespace Eval.Test.Unit.Models
         }
 
         [TestMethod]
-        public void UniformCrossoverMixedFromBoth()
+        public void BinaryGenotypeTests_UniformCrossoverMixedFromBoth()
         {
             var s = randomMock.SetupSequence(rng => rng.NextBool())
                 .Returns(true)
@@ -156,5 +168,11 @@ namespace Eval.Test.Unit.Models
             ((BinaryGenotype)g2.CrossoverWith(g1, CrossoverType.Uniform, randomMock.Object))
                 .ToBitString().Should().Be("1010101010");
         }
+    }
+
+    [TestClass]
+    public class BinaryGenotypeBaseTests : GenotypeTestBase<BinaryGenotype>
+    {
+        protected override BinaryGenotype CreateGenotype => new BinaryGenotype(10);
     }
 }

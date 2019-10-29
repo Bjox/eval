@@ -9,19 +9,14 @@ namespace Eval.Core.Models
 {
     public class Population : IReadOnlyList<IPhenotype>
     {
+        /// <summary>
+        /// A flag that indiciates if the population is filled.
+        /// </summary>
         public bool IsFilled { get; private set; }
         /// <summary>
         /// A sorted population will always have the best fitness (lowest or highest) at index 0.
         /// </summary>
         public bool IsSorted { get; private set; }
-        private int _index;
-        private readonly IPhenotype[] _population;
-
-        public Population(int size)
-        {
-            _population = new IPhenotype[size];
-            _index = 0;
-        }
 
         /// <summary>
         /// Returns the Maxiumum allowed size of the population
@@ -33,6 +28,14 @@ namespace Eval.Core.Models
         /// </summary>
         public int Count => _index;
 
+        private readonly IPhenotype[] _population;
+        private int _index;
+
+        public Population(int size)
+        {
+            _population = new IPhenotype[size];
+            _index = 0;
+        }
 
         public IPhenotype this[int key]
         {
@@ -79,17 +82,21 @@ namespace Eval.Core.Models
             // O(n)
             if (elitism == 1)
             {
-                IPhenotype elite = null;
-                switch (mode)
+                IPhenotype elite = _population[0];
+
+                if (!IsSorted)
                 {
-                    case EAMode.MaximizeFitness:
-                        elite = GetMaxFitness();
-                        break;
-                    case EAMode.MinimizeFitness:
-                        elite = GetMinFitness();
-                        break;
-                    default:
-                        throw new NotImplementedException(mode.ToString());
+                    switch (mode)
+                    {
+                        case EAMode.MaximizeFitness:
+                            elite = GetMaxFitness();
+                            break;
+                        case EAMode.MinimizeFitness:
+                            elite = GetMinFitness();
+                            break;
+                        default:
+                            throw new NotImplementedException(mode.ToString());
+                    }
                 }
 
                 Clear();
@@ -104,7 +111,6 @@ namespace Eval.Core.Models
             IsFilled = false;
             IsSorted = false;
         }
-
 
         public void Evaluate(bool reevaluate, Action<IPhenotype> phenotypeEvaluatedEvent)
         {
