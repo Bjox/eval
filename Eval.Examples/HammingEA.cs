@@ -3,16 +3,12 @@ using Eval.Core.Config;
 using Eval.Core.Models;
 using Eval.Core.Selection.Adult;
 using Eval.Core.Selection.Parent;
-using Eval.Core.Util;
 using Eval.Core.Util.EARandom;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Eval.Examples
 {
@@ -40,9 +36,7 @@ namespace Eval.Examples
                 case CrossoverType.Uniform:
                     StringBuilder sb = new StringBuilder();
                     for (int i = 0; i < Math.Min(str.Length, og.str.Length); i++)
-                    {
                         sb.Append(random.NextBool() ? str[i] : og.str[i]);
-                    }
                     newgeno.str = sb.ToString();
                     break;
 
@@ -110,9 +104,7 @@ namespace Eval.Examples
         {
             int hammingdist = 2 * Math.Abs(geno.str.Length - HammingEA.TARGET.Length);
             for (int i = 0; i < Math.Min(geno.str.Length, HammingEA.TARGET.Length); i++)
-            {
                 hammingdist += geno.str[i] == HammingEA.TARGET[i] ? 0 : 1;
-            }
             return hammingdist;
         }
 
@@ -130,11 +122,8 @@ namespace Eval.Examples
     {
         public static string TARGET = "Lorem ipsum dolor sit amet";
 
-        public HammingEA(IEAConfiguration config, IRandomNumberGenerator rng) 
-            : base(config, rng)
-        {
-            
-        }
+        public HammingEA(IEAConfiguration config, IRandomNumberGenerator rng) : base(config, rng)
+        {}
 
         protected override IPhenotype CreatePhenotype(IGenotype genotype)
         {
@@ -146,9 +135,7 @@ namespace Eval.Examples
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < RNG.Next(1, 10); i++)
-            {
                 sb.Append((char)RNG.Next(32, 122));
-            }
             HammingPhenotype p = new HammingPhenotype(new StringGenotype(sb.ToString()));
             return p;
         }
@@ -185,9 +172,8 @@ namespace Eval.Examples
             {
                 currentStats = stats;
             };
-            //hammingEA.NewGenerationEvent += (gen) => {
+            
             hammingEA.NewBestFitnessEvent += (pheno) => {
-                //PrintProgressBar(gen, config.MaximumGenerations);
                 var gen = hammingEA.Generation;
 
                 double progress = (gen / (double)config.MaximumGenerations) * 100.0;
@@ -209,17 +195,6 @@ namespace Eval.Examples
             Console.WriteLine($"Winner: {res.Winner}");
             WriteResultToFile(hammingEA.PopulationStatistics);
             Console.Read();
-        }
-
-        private static void PrintProgressBar(int gen, int genmax)
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("\r");
-            ConsoleProgressBar.BuildProgressBar(sb, 50, gen, genmax);
-            sb.Append("  Gen: ");
-            sb.Append(gen);
-            Console.Write(sb.ToString());
-            Console.Out.Flush();
         }
             
         private static void WriteResultToFile(List<PopulationStatistics> stats)
