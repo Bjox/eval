@@ -22,7 +22,7 @@ namespace Eval.Core
         public event Action AbortedEvent;
         public event Action<PopulationStatistics> PopulationStatisticsCalculated;
 
-        protected readonly List<PopulationStatistics> PopulationStatistics;
+        protected List<PopulationStatistics> PopulationStatistics { get; private set; }
         protected readonly List<IPhenotype> Elites;
 
         protected IPhenotype GenerationalBest;
@@ -31,6 +31,7 @@ namespace Eval.Core
         protected IParentSelection ParentSelection;
         protected IAdultSelection AdultSelection;
         protected IRandomNumberGenerator RNG;
+        protected int Generation { get; private set; }
 
         public EA(IEAConfiguration configuration, IRandomNumberGenerator rng)
         {
@@ -104,7 +105,7 @@ namespace Eval.Core
             var offspring = new Population(offspringSize);
 
             population.Evaluate(EAConfiguration.ReevaluateElites, PhenotypeEvaluatedEvent);
-            var generation = 1;
+            Generation = 1;
 
             Best = null;
 
@@ -119,11 +120,11 @@ namespace Eval.Core
                     NewBestFitnessEvent?.Invoke(Best);
                 }
 
-                NewGenerationEvent?.Invoke(generation);
+                NewGenerationEvent?.Invoke(Generation);
                 
                 CalculateStatistics(population);
 
-                if (!RunCondition(generation))
+                if (!RunCondition(Generation))
                 {
                     break;
                 }
@@ -158,7 +159,7 @@ namespace Eval.Core
                 for (int i = 0; i < EAConfiguration.Elites; i++)
                     population.Add(Elites[i]);
 
-                generation++;
+                Generation++;
             }
 
             return new EAResult

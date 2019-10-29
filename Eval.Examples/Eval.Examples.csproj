@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HammingEA.cs" />
     <Compile Include="LOLZEA.cs" />
     <Compile Include="OneMaxEA.cs" />
     <Compile Include="Program.cs" />
