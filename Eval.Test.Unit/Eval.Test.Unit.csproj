@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="Config\EAConfigurationTests.cs" />
     <Compile Include="EA\EATests.cs" />
+    <Compile Include="EA\HammingEATests.cs" />
     <Compile Include="EA\OneMaxEATests.cs" />
     <Compile Include="Models\AbstractListGenotypeTestBase.cs" />
     <Compile Include="Models\PopulationTests.cs" />
