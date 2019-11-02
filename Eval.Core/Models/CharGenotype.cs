@@ -8,6 +8,7 @@ namespace Eval.Core.Models
     /// <summary>
     /// A character based genotype of fixed length, supporting ASCII characters.
     /// </summary>
+    [Serializable]
     public class CharGenotype : AbstractListGenotype<char[], char>
     {
         public char[] Chars => Elements;

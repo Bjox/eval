@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="HammingEA.cs" />
     <Compile Include="LOLZEA.cs" />
-    <Compile Include="Hamming.cs" />
     <Compile Include="OneMaxEA.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

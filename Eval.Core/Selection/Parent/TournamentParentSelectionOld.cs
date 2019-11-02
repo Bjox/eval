@@ -9,6 +9,7 @@ using Eval.Core.Util.EARandom;
 namespace Eval.Core.Selection.Parent
 {
     [Obsolete("Use new tournament selection instead")]
+    [Serializable]
     public class TournamentParentSelectionOld : IParentSelection
     {
         private readonly int _tournamentSize;

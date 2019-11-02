@@ -1,5 +1,7 @@
 ﻿using Eval.Core.Config;
 using Eval.Core.Util.EARandom;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,12 +11,14 @@ namespace Eval.Core.Models
 {
 
     [Serializable]
+    [JsonConverter(typeof(PopulationConverter))]
     public class Population : IReadOnlyList<IPhenotype>
     {
         /// <summary>
         /// A flag that indiciates if the population is filled.
         /// </summary>
         public bool IsFilled { get; private set; }
+
         /// <summary>
         /// A sorted population will always have the best fitness (lowest or highest) at index 0.
         /// </summary>
@@ -30,9 +34,10 @@ namespace Eval.Core.Models
         /// </summary>
         public int Count => _index;
 
-        private readonly IPhenotype[] _population;
+        
+        private IPhenotype[] _population;
         private int _index;
-
+        
         public Population(int size)
         {
             _population = new IPhenotype[size];
@@ -280,6 +285,58 @@ namespace Eval.Core.Models
         {
             ThrowIfNotFilled();
             return this[random.Next(Size)];
+        }
+    
+
+        private class PopulationConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return true;
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                if (reader.TokenType == JsonToken.Null)
+                    return null;
+
+                var json = JObject.Load(reader);
+            
+                var population = new Population(int.Parse(json.GetValue("Size").ToString()));
+                var phenos = (JArray)json.GetValue("Phenotypes");
+
+                JsonSerializerSettings settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
+                foreach (var pheno in phenos)
+                {
+                    var p = (IPhenotype)JsonConvert.DeserializeObject(pheno.ToString(), settings);
+                    population.Add(p);
+                }
+
+                return population;
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                if (value == null)
+                    return;
+
+                Population pop = (Population)value;
+
+                var popobj = new JObject();
+                popobj.Add("Size", pop.Size);
+
+                var phenos = new JArray();
+                foreach (var pheno in pop)
+                {
+                    phenos.Add(JToken.FromObject(pheno, serializer));
+                }
+                popobj.Add("Phenotypes", phenos);
+
+                serializer.Serialize(writer, popobj);
+            }
         }
     }
 }

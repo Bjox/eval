@@ -4,9 +4,14 @@ using Eval.Core.Selection.Adult;
 using Eval.Core.Selection.Parent;
 using Eval.Core.Util.EARandom;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 
 namespace Eval.Core
@@ -17,16 +22,24 @@ namespace Eval.Core
     {
         public IEAConfiguration EAConfiguration { get; set; }
 
+        [field: NonSerialized]
         public event Action<int> NewGenerationEvent;
+        [field: NonSerialized]
         public event Action<IPhenotype> NewBestFitnessEvent;
+        [field: NonSerialized]
         public event Action<double> FitnessLimitReachedEvent;
+        [field: NonSerialized]
         public event Action<int> GenerationLimitReachedEvent;
+        [field: NonSerialized]
         public event Action<IPhenotype> PhenotypeEvaluatedEvent;
+        [field: NonSerialized]
         public event Action AbortedEvent;
+        [field: NonSerialized]
         public event Action<PopulationStatistics> PopulationStatisticsCalculated;
 
         protected List<PopulationStatistics> PopulationStatistics { get; private set; }
-        protected readonly List<IPhenotype> Elites;
+        [JsonConverter(typeof(EAConverter))]
+        protected List<IPhenotype> Elites;
 
         protected IPhenotype GenerationalBest;
         protected IPhenotype Best;
@@ -35,6 +48,11 @@ namespace Eval.Core
         protected IAdultSelection AdultSelection;
         protected IRandomNumberGenerator RNG;
         protected int Generation { get; private set; }
+        private bool _newRun;
+        private int _offspringSize;
+        private Population _offspring;
+
+        protected Population Population { get; private set; }
 
         public EA(IEAConfiguration configuration, IRandomNumberGenerator rng)
         {
@@ -51,6 +69,8 @@ namespace Eval.Core
                 ThreadPool.SetMinThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
                 ThreadPool.SetMaxThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
             }
+
+            _newRun = true;
         }
 
         protected abstract IPhenotype CreateRandomPhenotype();
@@ -103,19 +123,23 @@ namespace Eval.Core
 
         public EAResult Evolve()
         {
-            var population = CreateInitialPopulation(EAConfiguration.PopulationSize);
-            var offspringSize = (int)(EAConfiguration.PopulationSize * Math.Max(EAConfiguration.OverproductionFactor, 1));
-            var offspring = new Population(offspringSize);
+            if (_newRun)
+            {
+                Population = CreateInitialPopulation(EAConfiguration.PopulationSize);
+                _offspringSize = (int)(EAConfiguration.PopulationSize * Math.Max(EAConfiguration.OverproductionFactor, 1));
+                _offspring = new Population(_offspringSize);
 
-            population.Evaluate(EAConfiguration.ReevaluateElites, PhenotypeEvaluatedEvent);
-            Generation = 1;
+                Population.Evaluate(EAConfiguration.ReevaluateElites, PhenotypeEvaluatedEvent);
+                Generation = 1;
 
-            Best = null;
+                Best = null;
+                _newRun = true;
+            }
 
             while (true)
             {
-                population.Sort(EAConfiguration.Mode);
-                var generationBest = population.First();
+                Population.Sort(EAConfiguration.Mode);
+                var generationBest = Population.First();
 
                 if (IsBetterThan(generationBest, Best))
                 {
@@ -125,7 +149,7 @@ namespace Eval.Core
 
                 NewGenerationEvent?.Invoke(Generation);
                 
-                CalculateStatistics(population);
+                CalculateStatistics(Population);
 
                 if (!RunCondition(Generation))
                 {
@@ -134,11 +158,11 @@ namespace Eval.Core
                 
                 Elites.Clear();
                 for (int i = 0; i < EAConfiguration.Elites; i++)
-                    Elites.Add(population[i]);
+                    Elites.Add(Population[i]);
                 
-                var parents = ParentSelection.SelectParents(population, offspringSize - Elites.Count, EAConfiguration.Mode, RNG);
+                var parents = ParentSelection.SelectParents(Population, _offspringSize - Elites.Count, EAConfiguration.Mode, RNG);
                 
-                offspring.Clear();
+                _offspring.Clear();
                 foreach (var couple in parents)
                 {
                     IGenotype geno1 = couple.Item1.Genotype;
@@ -152,23 +176,23 @@ namespace Eval.Core
 
                     newgeno.Mutate(EAConfiguration.MutationRate, RNG);
                     var child = CreatePhenotype(newgeno);
-                    offspring.Add(child);
+                    _offspring.Add(child);
                 }
                 
-                CalculateFitnesses(offspring);
+                CalculateFitnesses(_offspring);
                 
-                AdultSelection.SelectAdults(offspring, population, EAConfiguration.PopulationSize - Elites.Count, EAConfiguration.Mode);
+                AdultSelection.SelectAdults(_offspring, Population, EAConfiguration.PopulationSize - Elites.Count, EAConfiguration.Mode);
                 
                 for (int i = 0; i < EAConfiguration.Elites; i++)
-                    population.Add(Elites[i]);
+                    Population.Add(Elites[i]);
 
                 Generation++;
             }
 
             return new EAResult
             {
-                Winner = population[0],
-                EndPopulation = population
+                Winner = Population[0],
+                EndPopulation = Population
             };
         }
 
@@ -255,19 +279,137 @@ namespace Eval.Core
             countdownEvent.Signal();
         }
 
+        public void Serialize(string filename)
+        {
+            var stream = File.OpenWrite(filename);
+            var formatter = new BinaryFormatter();
+            formatter.Serialize(stream, this);
+            stream.Close();
+        }
+
+        public void Deserialize(string filename)
+        {
+            var stream = File.OpenRead(filename);
+            var formatter = new BinaryFormatter();
+            var ea = (EA)formatter.Deserialize(stream);
+            stream.Close();
+            this.Population = ea.Population;
+            this.PopulationStatistics = ea.PopulationStatistics;
+            this.ParentSelection = ea.ParentSelection;
+            this.AdultSelection = ea.AdultSelection;
+            this.Best = ea.Best;
+            this.EAConfiguration = ea.EAConfiguration;
+            this.Elites = ea.Elites;
+            this.Generation = ea.Generation;
+            this.GenerationalBest = ea.GenerationalBest;
+            this.RNG = ea.RNG;
+            this._offspring = ea._offspring;
+            this._offspringSize = ea._offspringSize;
+            _newRun = false;
+        }
+
         public void SaveState(string filename)
         {
             var jsonSerializerSettings = new JsonSerializerSettings()
             {
-                TypeNameHandling = TypeNameHandling.All
+                TypeNameHandling = TypeNameHandling.All,
+                Formatting = Formatting.Indented,
+                ContractResolver = new AllFieldsContractResolver()
             };
             var json = JsonConvert.SerializeObject(this, jsonSerializerSettings);
+            File.WriteAllText(filename, json);
         }
 
         public void LoadState(string filename)
         {
-
+            var json = File.ReadAllText(filename);
+            var jsonSerializerSettings = new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.All,
+                Formatting = Formatting.Indented,
+                ContractResolver = new AllFieldsContractResolver()
+            };
+            var ea = JsonConvert.DeserializeObject<EA>(json, jsonSerializerSettings);
+            this.Population = ea.Population;
+            this.PopulationStatistics = ea.PopulationStatistics;
+            this.ParentSelection = ea.ParentSelection;
+            this.AdultSelection = ea.AdultSelection;
+            this.Best = ea.Best;
+            this.EAConfiguration = ea.EAConfiguration;
+            this.Elites = ea.Elites;
+            this.Generation = ea.Generation;
+            this.GenerationalBest = ea.GenerationalBest;
+            this.RNG = ea.RNG;
+            this._offspring = ea._offspring;
+            this._offspringSize = ea._offspringSize;
+            _newRun = false;
         }
+
+        private class AllFieldsContractResolver : DefaultContractResolver
+        {
+            protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+            {
+                var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                                .Select(p => base.CreateProperty(p, memberSerialization))
+                                .Union(type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                                           .Select(f => base.CreateProperty(f, memberSerialization)))
+                                .ToList();
+                props.ForEach(p => { p.Writable = true; p.Readable = true; });
+                return props;
+            }
+        }
+
+        private class EAConverter : JsonConverter
+        {
+            public override bool CanConvert(Type objectType)
+            {
+                return true;
+            }
+
+            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+            {
+                if (reader.TokenType == JsonToken.Null)
+                    return null;
+
+                var json = JObject.Load(reader);
+
+                var population = new Population(int.Parse(json.GetValue("Size").ToString()));
+                var phenos = (JArray)json.GetValue("Phenotypes");
+
+                JsonSerializerSettings settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
+                foreach (var pheno in phenos)
+                {
+                    var p = (IPhenotype)JsonConvert.DeserializeObject(pheno.ToString(), settings);
+                    population.Add(p);
+                }
+
+                return population;
+            }
+
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            {
+                if (value == null)
+                    return;
+
+                Population pop = (Population)value;
+
+                var popobj = new JObject();
+                popobj.Add("Size", pop.Size);
+
+                var phenos = new JArray();
+                foreach (var pheno in pop)
+                {
+                    phenos.Add(JToken.FromObject(pheno, serializer));
+                }
+                popobj.Add("Phenotypes", phenos);
+
+                serializer.Serialize(writer, popobj);
+            }
+        }
+
     }
 
 }

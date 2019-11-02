@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 
 namespace Eval.Core.Config
 {
+    [Serializable]
     public class EAConfiguration : IEAConfiguration
     {
         public int PopulationSize { get; set; }
@@ -30,6 +31,7 @@ namespace Eval.Core.Config
         public bool CalculateStatistics { get; set; }
         public int WorkerThreads { get; set; }
         public int IOThreads { get; set; } 
+        public int SaveStateGenerationInterval { get; set; }
 
 
         public static EAConfiguration ReadConfigurationFromFile(string filePath)

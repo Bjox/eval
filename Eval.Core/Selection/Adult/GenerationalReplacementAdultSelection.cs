@@ -6,6 +6,7 @@ using Eval.Core.Models;
 
 namespace Eval.Core.Selection.Adult
 {
+    [Serializable]
     public class GenerationalReplacementAdultSelection : IAdultSelection
     {
         public void SelectAdults(Population offspring, Population population, int n, EAMode eamode)

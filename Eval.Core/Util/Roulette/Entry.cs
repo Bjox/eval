@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Eval.Core.Util.Roulette
 {
+    [Serializable]
     public class Entry<T>
     {
         public T Value { get; private set; }

@@ -12,6 +12,7 @@ using System.Text;
 
 namespace Eval.Examples
 {
+    [Serializable]
     class StringGenotype : Genotype
     {
         public string str;
@@ -91,6 +92,7 @@ namespace Eval.Examples
         
     }
 
+    [Serializable]
     class HammingPhenotype : Phenotype
     {
         private StringGenotype geno;
@@ -118,9 +120,10 @@ namespace Eval.Examples
     /// Optimizes towards a given string. 
     /// This is a minimization problem using hamming distance for fitness function
     /// </summary>
+    [Serializable]
     public class HammingEA : EA
     {
-        public static string TARGET = "Lorem ipsum dolor sit amet";
+        public static string TARGET = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
         public HammingEA(IEAConfiguration config, IRandomNumberGenerator rng) : base(config, rng)
         {}
@@ -163,6 +166,9 @@ namespace Eval.Examples
 
             var hammingEA = new HammingEA(config, new DefaultRandomNumberGenerator());
 
+            //hammingEA.LoadState("state.json");
+            //hammingEA.Deserialize("state.bin");
+
             var stopwatchtot = new Stopwatch();
             var stopwatchgen = new Stopwatch();
 
@@ -171,6 +177,15 @@ namespace Eval.Examples
             hammingEA.PopulationStatisticsCalculated += (stats) =>
             {
                 currentStats = stats;
+            };
+
+            hammingEA.NewGenerationEvent += (gen) =>
+            {
+                if (gen == 1000)
+                {
+                    hammingEA.SaveState("state.json");
+                    //hammingEA.Serialize("state.bin");
+                }
             };
             
             hammingEA.NewBestFitnessEvent += (pheno) => {

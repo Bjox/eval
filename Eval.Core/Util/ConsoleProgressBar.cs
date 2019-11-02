@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Eval.Core.Util
 {
+    [Serializable]
     public class ConsoleProgressBar
     {
 

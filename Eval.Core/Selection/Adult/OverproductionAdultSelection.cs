@@ -3,11 +3,10 @@ using Eval.Core.Models;
 using Eval.Core.Util.EARandom;
 using Eval.Core.Util.Roulette;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Eval.Core.Selection.Adult
 {
+    [Serializable]
     public class OverproductionAdultSelection : IAdultSelection
     {
         private readonly IRandomNumberGenerator _rng;
