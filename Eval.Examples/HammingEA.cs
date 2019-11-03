@@ -148,20 +148,22 @@ namespace Eval.Examples
         {
             var config = new EAConfiguration
             {
-                PopulationSize = 100,
-                OverproductionFactor = 2.0,
+                PopulationSize = 25,
+                OverproductionFactor = 1.2,
                 MaximumGenerations = 100000,
                 CrossoverType = CrossoverType.OnePoint,
-                AdultSelectionType = AdultSelectionType.GenerationalMixing,
+                AdultSelectionType = AdultSelectionType.GenerationalReplacement,
                 ParentSelectionType = ParentSelectionType.Tournament,
-                CrossoverRate = 0.9,
-                MutationRate = 0.25,
-                TournamentSize = 10,
-                TournamentProbability = 0.8,
+                CrossoverRate = 0.18,
+                MutationRate = 0.97,
+                TournamentSize = 19,
+                TournamentProbability = 0.77,
                 TargetFitness = 0.0,
                 Mode = EAMode.MinimizeFitness,
-                Elites = 1,
-                CalculateStatistics = true
+                Elites = 2,
+                CalculateStatistics = true,
+                SnapshotGenerationInterval = 5000,
+                SnapshotFilename = "snapshot.bin"
             };
 
             var hammingEA = new HammingEA(config, new DefaultRandomNumberGenerator());
@@ -183,7 +185,7 @@ namespace Eval.Examples
             {
                 if (gen == 1000)
                 {
-                    hammingEA.SaveState("state.json");
+                    //hammingEA.SaveState("state.json");
                     //hammingEA.Serialize("state.bin");
                 }
             };

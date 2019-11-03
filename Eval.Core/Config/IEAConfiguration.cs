@@ -122,5 +122,13 @@ namespace Eval.Core.Config
         /// Default value = 1
         /// </summary>
         int IOThreads { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        int SnapshotGenerationInterval { get; }
+        /// <summary>
+        /// 
+        /// </summary>
+        string SnapshotFilename { get; }
     }
 }

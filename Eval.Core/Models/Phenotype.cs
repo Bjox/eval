@@ -9,7 +9,7 @@ namespace Eval.Core.Models
     {
         private double _fitness;
 
-        public bool IsEvaluated { get; private set; }
+        public bool IsEvaluated { get; set; }
         public IGenotype Genotype { get; }
         public double Fitness
         { 

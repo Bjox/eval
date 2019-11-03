@@ -31,7 +31,8 @@ namespace Eval.Core.Config
         public bool CalculateStatistics { get; set; }
         public int WorkerThreads { get; set; }
         public int IOThreads { get; set; } 
-        public int SaveStateGenerationInterval { get; set; }
+        public int SnapshotGenerationInterval { get; set; }
+        public string SnapshotFilename { get; set; }
 
 
         public static EAConfiguration ReadConfigurationFromFile(string filePath)

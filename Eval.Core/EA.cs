@@ -38,7 +38,6 @@ namespace Eval.Core
         public event Action<PopulationStatistics> PopulationStatisticsCalculated;
 
         protected List<PopulationStatistics> PopulationStatistics { get; private set; }
-        [JsonConverter(typeof(EAConverter))]
         protected List<IPhenotype> Elites;
 
         protected IPhenotype GenerationalBest;
@@ -123,7 +122,13 @@ namespace Eval.Core
 
         public EAResult Evolve()
         {
-            if (_newRun)
+            if (EAConfiguration.SnapshotGenerationInterval > 0 
+                && !string.IsNullOrEmpty(EAConfiguration.SnapshotFilename)
+                && File.Exists(EAConfiguration.SnapshotFilename))
+            {
+                BinaryDeserialize(EAConfiguration.SnapshotFilename);
+            }
+            else
             {
                 Population = CreateInitialPopulation(EAConfiguration.PopulationSize);
                 _offspringSize = (int)(EAConfiguration.PopulationSize * Math.Max(EAConfiguration.OverproductionFactor, 1));
@@ -138,6 +143,7 @@ namespace Eval.Core
 
             while (true)
             {
+                Serialize();
                 Population.Sort(EAConfiguration.Mode);
                 var generationBest = Population.First();
 
@@ -279,7 +285,17 @@ namespace Eval.Core
             countdownEvent.Signal();
         }
 
-        public void Serialize(string filename)
+        private void Serialize()
+        {
+            if (EAConfiguration.SnapshotGenerationInterval < 0
+                || Generation % EAConfiguration.SnapshotGenerationInterval != 0
+                && Generation != 1) // run on first generation as a test in case some class is missing [Serializable]
+                return;
+
+            BinarySerialize(EAConfiguration.SnapshotFilename);
+        }
+
+        public virtual void BinarySerialize(string filename)
         {
             var stream = File.OpenWrite(filename);
             var formatter = new BinaryFormatter();
@@ -287,7 +303,7 @@ namespace Eval.Core
             stream.Close();
         }
 
-        public void Deserialize(string filename)
+        public virtual void BinaryDeserialize(string filename)
         {
             var stream = File.OpenRead(filename);
             var formatter = new BinaryFormatter();
@@ -298,7 +314,7 @@ namespace Eval.Core
             this.ParentSelection = ea.ParentSelection;
             this.AdultSelection = ea.AdultSelection;
             this.Best = ea.Best;
-            this.EAConfiguration = ea.EAConfiguration;
+            //this.EAConfiguration = ea.EAConfiguration;
             this.Elites = ea.Elites;
             this.Generation = ea.Generation;
             this.GenerationalBest = ea.GenerationalBest;
@@ -308,40 +324,51 @@ namespace Eval.Core
             _newRun = false;
         }
 
-        public void SaveState(string filename)
+        public virtual void SaveState(string filename)
         {
             var jsonSerializerSettings = new JsonSerializerSettings()
             {
                 TypeNameHandling = TypeNameHandling.All,
                 Formatting = Formatting.Indented,
-                ContractResolver = new AllFieldsContractResolver()
+                ContractResolver = new AllFieldsContractResolver(),
+                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
             };
             var json = JsonConvert.SerializeObject(this, jsonSerializerSettings);
             File.WriteAllText(filename, json);
         }
 
-        public void LoadState(string filename)
+        public virtual void LoadState(string filename)
         {
             var json = File.ReadAllText(filename);
+            ITraceWriter traceWriter = new MemoryTraceWriter();
             var jsonSerializerSettings = new JsonSerializerSettings()
             {
                 TypeNameHandling = TypeNameHandling.All,
                 Formatting = Formatting.Indented,
-                ContractResolver = new AllFieldsContractResolver()
+                ContractResolver = new AllFieldsContractResolver(),
+                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
             };
-            var ea = JsonConvert.DeserializeObject<EA>(json, jsonSerializerSettings);
-            this.Population = ea.Population;
-            this.PopulationStatistics = ea.PopulationStatistics;
-            this.ParentSelection = ea.ParentSelection;
-            this.AdultSelection = ea.AdultSelection;
-            this.Best = ea.Best;
-            this.EAConfiguration = ea.EAConfiguration;
-            this.Elites = ea.Elites;
-            this.Generation = ea.Generation;
-            this.GenerationalBest = ea.GenerationalBest;
-            this.RNG = ea.RNG;
-            this._offspring = ea._offspring;
-            this._offspringSize = ea._offspringSize;
+            try
+            {
+                var ea = JsonConvert.DeserializeObject<EA>(json, jsonSerializerSettings);
+                this.Population = ea.Population;
+                this.PopulationStatistics = ea.PopulationStatistics;
+                this.ParentSelection = ea.ParentSelection;
+                this.AdultSelection = ea.AdultSelection;
+                this.Best = ea.Best;
+                this.EAConfiguration = ea.EAConfiguration;
+                this.Elites = ea.Elites;
+                this.Generation = ea.Generation;
+                this.GenerationalBest = ea.GenerationalBest;
+                this.RNG = ea.RNG;
+                this._offspring = ea._offspring;
+                this._offspringSize = ea._offspringSize;
+
+            } catch (Exception e)
+            {
+                Console.WriteLine(traceWriter);
+            }
+
             _newRun = false;
         }
 
@@ -372,41 +399,38 @@ namespace Eval.Core
                     return null;
 
                 var json = JObject.Load(reader);
+                var jarray = (JArray)json.GetValue("$values");
 
-                var population = new Population(int.Parse(json.GetValue("Size").ToString()));
-                var phenos = (JArray)json.GetValue("Phenotypes");
+                var elites = new List<IPhenotype>();
 
-                JsonSerializerSettings settings = new JsonSerializerSettings
+                var settings = new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.All
                 };
-                foreach (var pheno in phenos)
+                foreach (var pheno in jarray)
                 {
                     var p = (IPhenotype)JsonConvert.DeserializeObject(pheno.ToString(), settings);
-                    population.Add(p);
+                    elites.Add(p);
                 }
 
-                return population;
+                return elites;
             }
 
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)                
             {
-                if (value == null)
-                    return;
+                //if (value == null)
+                //    return;
 
-                Population pop = (Population)value;
+                //var phenos = (List<IPhenotype>)value;
 
-                var popobj = new JObject();
-                popobj.Add("Size", pop.Size);
+                //var elites = new JArray();
+                //foreach (var pheno in phenos)
+                //{
+                //    elites.Add(JToken.FromObject(pheno, serializer));
+                //}
 
-                var phenos = new JArray();
-                foreach (var pheno in pop)
-                {
-                    phenos.Add(JToken.FromObject(pheno, serializer));
-                }
-                popobj.Add("Phenotypes", phenos);
-
-                serializer.Serialize(writer, popobj);
+                //serializer.Serialize(writer, elites);
+                serializer.Serialize(writer, value);
             }
         }
 

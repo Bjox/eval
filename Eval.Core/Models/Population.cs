@@ -305,7 +305,7 @@ namespace Eval.Core.Models
                 var population = new Population(int.Parse(json.GetValue("Size").ToString()));
                 var phenos = (JArray)json.GetValue("Phenotypes");
 
-                JsonSerializerSettings settings = new JsonSerializerSettings
+                var settings = new JsonSerializerSettings
                 {
                     TypeNameHandling = TypeNameHandling.All
                 };
@@ -323,7 +323,7 @@ namespace Eval.Core.Models
                 if (value == null)
                     return;
 
-                Population pop = (Population)value;
+                var pop = (Population)value;
 
                 var popobj = new JObject();
                 popobj.Add("Size", pop.Size);
