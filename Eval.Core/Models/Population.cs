@@ -11,7 +11,6 @@ namespace Eval.Core.Models
 {
 
     [Serializable]
-    [JsonConverter(typeof(PopulationConverter))]
     public class Population : IReadOnlyList<IPhenotype>
     {
         /// <summary>
@@ -288,55 +287,5 @@ namespace Eval.Core.Models
         }
     
 
-        private class PopulationConverter : JsonConverter
-        {
-            public override bool CanConvert(Type objectType)
-            {
-                return true;
-            }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                if (reader.TokenType == JsonToken.Null)
-                    return null;
-
-                var json = JObject.Load(reader);
-            
-                var population = new Population(int.Parse(json.GetValue("Size").ToString()));
-                var phenos = (JArray)json.GetValue("Phenotypes");
-
-                var settings = new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                };
-                foreach (var pheno in phenos)
-                {
-                    var p = (IPhenotype)JsonConvert.DeserializeObject(pheno.ToString(), settings);
-                    population.Add(p);
-                }
-
-                return population;
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                if (value == null)
-                    return;
-
-                var pop = (Population)value;
-
-                var popobj = new JObject();
-                popobj.Add("Size", pop.Size);
-
-                var phenos = new JArray();
-                foreach (var pheno in pop)
-                {
-                    phenos.Add(JToken.FromObject(pheno, serializer));
-                }
-                popobj.Add("Phenotypes", phenos);
-
-                serializer.Serialize(writer, popobj);
-            }
-        }
     }
 }

@@ -47,7 +47,6 @@ namespace Eval.Core
         protected IAdultSelection AdultSelection;
         protected IRandomNumberGenerator RNG;
         protected int Generation { get; private set; }
-        private bool _newRun;
         private int _offspringSize;
         private Population _offspring;
 
@@ -68,8 +67,7 @@ namespace Eval.Core
                 ThreadPool.SetMinThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
                 ThreadPool.SetMaxThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
             }
-
-            _newRun = true;
+            
         }
 
         protected abstract IPhenotype CreateRandomPhenotype();
@@ -138,7 +136,6 @@ namespace Eval.Core
                 Generation = 1;
 
                 Best = null;
-                _newRun = true;
             }
 
             while (true)
@@ -287,7 +284,7 @@ namespace Eval.Core
 
         private void Serialize()
         {
-            if (EAConfiguration.SnapshotGenerationInterval < 0
+            if (EAConfiguration.SnapshotGenerationInterval <= 0
                 || Generation % EAConfiguration.SnapshotGenerationInterval != 0
                 && Generation != 1) // run on first generation as a test in case some class is missing [Serializable]
                 return;
@@ -321,119 +318,7 @@ namespace Eval.Core
             this.RNG = ea.RNG;
             this._offspring = ea._offspring;
             this._offspringSize = ea._offspringSize;
-            _newRun = false;
         }
-
-        public virtual void SaveState(string filename)
-        {
-            var jsonSerializerSettings = new JsonSerializerSettings()
-            {
-                TypeNameHandling = TypeNameHandling.All,
-                Formatting = Formatting.Indented,
-                ContractResolver = new AllFieldsContractResolver(),
-                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
-            };
-            var json = JsonConvert.SerializeObject(this, jsonSerializerSettings);
-            File.WriteAllText(filename, json);
-        }
-
-        public virtual void LoadState(string filename)
-        {
-            var json = File.ReadAllText(filename);
-            ITraceWriter traceWriter = new MemoryTraceWriter();
-            var jsonSerializerSettings = new JsonSerializerSettings()
-            {
-                TypeNameHandling = TypeNameHandling.All,
-                Formatting = Formatting.Indented,
-                ContractResolver = new AllFieldsContractResolver(),
-                ConstructorHandling = ConstructorHandling.AllowNonPublicDefaultConstructor
-            };
-            try
-            {
-                var ea = JsonConvert.DeserializeObject<EA>(json, jsonSerializerSettings);
-                this.Population = ea.Population;
-                this.PopulationStatistics = ea.PopulationStatistics;
-                this.ParentSelection = ea.ParentSelection;
-                this.AdultSelection = ea.AdultSelection;
-                this.Best = ea.Best;
-                this.EAConfiguration = ea.EAConfiguration;
-                this.Elites = ea.Elites;
-                this.Generation = ea.Generation;
-                this.GenerationalBest = ea.GenerationalBest;
-                this.RNG = ea.RNG;
-                this._offspring = ea._offspring;
-                this._offspringSize = ea._offspringSize;
-
-            } catch (Exception e)
-            {
-                Console.WriteLine(traceWriter);
-            }
-
-            _newRun = false;
-        }
-
-        private class AllFieldsContractResolver : DefaultContractResolver
-        {
-            protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
-            {
-                var props = type.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                                .Select(p => base.CreateProperty(p, memberSerialization))
-                                .Union(type.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
-                                           .Select(f => base.CreateProperty(f, memberSerialization)))
-                                .ToList();
-                props.ForEach(p => { p.Writable = true; p.Readable = true; });
-                return props;
-            }
-        }
-
-        private class EAConverter : JsonConverter
-        {
-            public override bool CanConvert(Type objectType)
-            {
-                return true;
-            }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                if (reader.TokenType == JsonToken.Null)
-                    return null;
-
-                var json = JObject.Load(reader);
-                var jarray = (JArray)json.GetValue("$values");
-
-                var elites = new List<IPhenotype>();
-
-                var settings = new JsonSerializerSettings
-                {
-                    TypeNameHandling = TypeNameHandling.All
-                };
-                foreach (var pheno in jarray)
-                {
-                    var p = (IPhenotype)JsonConvert.DeserializeObject(pheno.ToString(), settings);
-                    elites.Add(p);
-                }
-
-                return elites;
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)                
-            {
-                //if (value == null)
-                //    return;
-
-                //var phenos = (List<IPhenotype>)value;
-
-                //var elites = new JArray();
-                //foreach (var pheno in phenos)
-                //{
-                //    elites.Add(JToken.FromObject(pheno, serializer));
-                //}
-
-                //serializer.Serialize(writer, elites);
-                serializer.Serialize(writer, value);
-            }
-        }
-
     }
 
 }

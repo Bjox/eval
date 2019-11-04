@@ -116,7 +116,7 @@ namespace Eval.Examples
             };
             onemaxEA.NewGenerationEvent += (gen) => {
                 //PrintProgressBar(gen, config.MaximumGenerations);
-
+                Console.Clear();
                 double progress = (gen / (double)config.MaximumGenerations) * 100.0;
                 var totruntime = stopwatchtot.Elapsed;
                 var genruntime = stopwatchgen.Elapsed;

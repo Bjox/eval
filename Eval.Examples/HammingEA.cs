@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace Eval.Examples
 {
@@ -108,6 +109,7 @@ namespace Eval.Examples
             for (int i = 0; i < Math.Min(geno.str.Length, HammingEA.TARGET.Length); i++)
                 hammingdist += geno.str[i] == HammingEA.TARGET[i] ? 0 : 1;
             return hammingdist;
+            //return 1.0 / (hammingdist + 1);
         }
 
         public override string ToString()
@@ -148,11 +150,11 @@ namespace Eval.Examples
         {
             var config = new EAConfiguration
             {
-                PopulationSize = 25,
+                PopulationSize = 250,
                 OverproductionFactor = 1.2,
                 MaximumGenerations = 100000,
                 CrossoverType = CrossoverType.OnePoint,
-                AdultSelectionType = AdultSelectionType.GenerationalReplacement,
+                AdultSelectionType = AdultSelectionType.GenerationalMixing,
                 ParentSelectionType = ParentSelectionType.Tournament,
                 CrossoverRate = 0.18,
                 MutationRate = 0.97,
@@ -161,56 +163,54 @@ namespace Eval.Examples
                 TargetFitness = 0.0,
                 Mode = EAMode.MinimizeFitness,
                 Elites = 2,
-                CalculateStatistics = true,
-                SnapshotGenerationInterval = 5000,
-                SnapshotFilename = "snapshot.bin"
+                //CalculateStatistics = true,
+                //SnapshotGenerationInterval = 5000,
+                //SnapshotFilename = "snapshot.bin"
             };
 
             var hammingEA = new HammingEA(config, new DefaultRandomNumberGenerator());
-
-            //hammingEA.LoadState("state.json");
-            //hammingEA.Deserialize("state.bin");
 
             var stopwatchtot = new Stopwatch();
             var stopwatchgen = new Stopwatch();
 
             PopulationStatistics currentStats = new PopulationStatistics();
 
-            hammingEA.PopulationStatisticsCalculated += (stats) =>
-            {
-                currentStats = stats;
-            };
+            //hammingEA.PopulationStatisticsCalculated += (stats) =>
+            //{
+            //    currentStats = stats;
+            //};
 
-            hammingEA.NewGenerationEvent += (gen) =>
-            {
-                if (gen == 1000)
-                {
-                    //hammingEA.SaveState("state.json");
-                    //hammingEA.Serialize("state.bin");
-                }
-            };
+            //hammingEA.NewGenerationEvent += (gen) =>
+            //{
+            //    if (gen == 1000)
+            //    {
+            //        //hammingEA.SaveState("state.json");
+            //        //hammingEA.Serialize("state.bin");
+            //    }
+            //};
             
-            hammingEA.NewBestFitnessEvent += (pheno) => {
-                var gen = hammingEA.Generation;
-
-                double progress = (gen / (double)config.MaximumGenerations) * 100.0;
-                var totruntime = stopwatchtot.Elapsed;
-                var genruntime = stopwatchgen.Elapsed;
-                Console.WriteLine();
-                Console.WriteLine(string.Format("G# {0}    best_f: {1:F2}    avg_f: {2:F2}    SD: {3:F2}    Progress: {4,5:F2}    Gen: {5}   Tot: {6}", gen, hammingEA.Best.Fitness, currentStats.AverageFitness, currentStats.StandardDeviationFitness, progress, genruntime, totruntime));
-                Console.WriteLine("Generation winner: " + ((StringGenotype)hammingEA.Best?.Genotype));
-
-                stopwatchgen.Restart();
-            };
+            //hammingEA.NewBestFitnessEvent += (pheno) => {
+                
+            //    var gen = hammingEA.Generation;
+            //    double progress = (gen / (double)config.MaximumGenerations) * 100.0;
+            //    var totruntime = stopwatchtot.Elapsed;
+            //    var genruntime = stopwatchgen.Elapsed;
+            //    Console.WriteLine();
+            //    Console.WriteLine(string.Format("G# {0}    best_f: {1:F2}    avg_f: {2:F2}    SD: {3:F2}    Progress: {4,5:F2}    Gen: {5}   Tot: {6}", gen, hammingEA.Best.Fitness, currentStats.AverageFitness, currentStats.StandardDeviationFitness, progress, genruntime, totruntime));
+            //    Console.WriteLine("Generation winner: " + ((StringGenotype)hammingEA.Best?.Genotype));
+                
+            //    stopwatchgen.Restart();
+            //};
 
             stopwatchtot.Start();
             stopwatchgen.Start();
 
             var res = hammingEA.Evolve();
 
+            Console.WriteLine(stopwatchtot.Elapsed);
             Console.WriteLine("\n\nDone!");
             Console.WriteLine($"Winner: {res.Winner}");
-            WriteResultToFile(hammingEA.PopulationStatistics);
+            //WriteResultToFile(hammingEA.PopulationStatistics);
             Console.Read();
         }
             
