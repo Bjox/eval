@@ -2,16 +2,15 @@
 using Eval.Core.Models;
 using Eval.Core.Selection.Adult;
 using Eval.Core.Selection.Parent;
+using Eval.Core.Util;
 using Eval.Core.Util.EARandom;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading;
 
 namespace Eval.Core
@@ -20,8 +19,6 @@ namespace Eval.Core
     [Serializable]
     public abstract class EA
     {
-        public IEAConfiguration EAConfiguration { get; set; }
-
         [field: NonSerialized]
         public event Action<int> NewGenerationEvent;
         [field: NonSerialized]
@@ -37,20 +34,26 @@ namespace Eval.Core
         [field: NonSerialized]
         public event Action<PopulationStatistics> PopulationStatisticsCalculated;
 
+        public IEAConfiguration EAConfiguration { get; set; }
+        public bool IsRunning { get; private set; }
+        public bool IsStarted { get; private set; }
+        public int Generation { get; private set; }
+        public TimeSpan GetDuration => _stopwatch.Elapsed;
+
         protected List<PopulationStatistics> PopulationStatistics { get; private set; }
         protected List<IPhenotype> Elites;
-
         protected IPhenotype GenerationalBest;
         protected IPhenotype Best;
         protected bool Abort;
         protected IParentSelection ParentSelection;
         protected IAdultSelection AdultSelection;
         protected IRandomNumberGenerator RNG;
-        protected int Generation { get; private set; }
+        protected Population Population { get; private set; }
         private int _offspringSize;
         private Population _offspring;
+        private Stopwatch _stopwatch;
 
-        protected Population Population { get; private set; }
+
 
         public EA(IEAConfiguration configuration, IRandomNumberGenerator rng)
         {
@@ -120,6 +123,10 @@ namespace Eval.Core
 
         public EAResult Evolve()
         {
+            _stopwatch = Stopwatch.StartNew();
+            IsRunning = true;
+            IsStarted = true;
+
             if (EAConfiguration.SnapshotGenerationInterval > 0 
                 && !string.IsNullOrEmpty(EAConfiguration.SnapshotFilename)
                 && File.Exists(EAConfiguration.SnapshotFilename))
@@ -149,10 +156,10 @@ namespace Eval.Core
                     Best = generationBest;
                     NewBestFitnessEvent?.Invoke(Best);
                 }
-
-                NewGenerationEvent?.Invoke(Generation);
                 
                 CalculateStatistics(Population);
+
+                NewGenerationEvent?.Invoke(Generation);
 
                 if (!RunCondition(Generation))
                 {
@@ -192,6 +199,8 @@ namespace Eval.Core
                 Generation++;
             }
 
+            IsRunning = false;
+            _stopwatch.Stop();
             return new EAResult
             {
                 Winner = Population[0],
@@ -236,6 +245,8 @@ namespace Eval.Core
             }
             return true;
         }
+
+        
 
         protected virtual void CalculateStatistics(Population population)
         {
@@ -292,6 +303,10 @@ namespace Eval.Core
             BinarySerialize(EAConfiguration.SnapshotFilename);
         }
 
+        /// <summary>
+        /// Throws exception on serialization failure
+        /// </summary>
+        /// <param name="filename"></param>
         public virtual void BinarySerialize(string filename)
         {
             var stream = File.OpenWrite(filename);
@@ -300,6 +315,10 @@ namespace Eval.Core
             stream.Close();
         }
 
+        /// <summary>
+        /// Throws exception on deserialization failure
+        /// </summary>
+        /// <param name="filename"></param>
         public virtual void BinaryDeserialize(string filename)
         {
             var stream = File.OpenRead(filename);
