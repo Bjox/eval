@@ -29,7 +29,7 @@ namespace Eval.Core.Models
 
         protected AbstractListGenotype(AType elements)
         {
-            this.Elements = elements;
+            Elements = elements;
         }
 
         public EType this[int key]

@@ -120,7 +120,7 @@ namespace Eval.Examples
     /// </summary>
     public class HammingEA : EA
     {
-        public static string TARGET = "Lorem ipsum dolor sit amet";
+        public static string TARGET = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
 
         public HammingEA(IEAConfiguration config, IRandomNumberGenerator rng) : base(config, rng)
         {}
@@ -145,19 +145,19 @@ namespace Eval.Examples
         {
             var config = new EAConfiguration
             {
-                PopulationSize = 100,
-                OverproductionFactor = 2.0,
+                PopulationSize = 10,
+                OverproductionFactor = 1.0,
                 MaximumGenerations = 100000,
                 CrossoverType = CrossoverType.OnePoint,
-                AdultSelectionType = AdultSelectionType.GenerationalMixing,
+                AdultSelectionType = AdultSelectionType.GenerationalReplacement,
                 ParentSelectionType = ParentSelectionType.Tournament,
-                CrossoverRate = 0.9,
-                MutationRate = 0.25,
-                TournamentSize = 10,
-                TournamentProbability = 0.8,
+                CrossoverRate = 0.18,
+                MutationRate = 0.99,
+                TournamentSize = 19,
+                TournamentProbability = 0.77,
                 TargetFitness = 0.0,
                 Mode = EAMode.MinimizeFitness,
-                Elites = 1,
+                Elites = 2,
                 CalculateStatistics = true
             };
 
@@ -173,9 +173,7 @@ namespace Eval.Examples
                 currentStats = stats;
             };
             
-            hammingEA.NewBestFitnessEvent += (pheno) => {
-                var gen = hammingEA.Generation;
-
+            hammingEA.NewBestFitnessEvent += (pheno, gen) => {
                 double progress = (gen / (double)config.MaximumGenerations) * 100.0;
                 var totruntime = stopwatchtot.Elapsed;
                 var genruntime = stopwatchgen.Elapsed;
@@ -184,6 +182,11 @@ namespace Eval.Examples
                 Console.WriteLine("Generation winner: " + ((StringGenotype)hammingEA.Best?.Genotype));
 
                 stopwatchgen.Restart();
+            };
+
+            hammingEA.FitnessLimitReachedEvent += (fitness) =>
+            {
+                Console.WriteLine($"Fitness limit reached: {fitness}");
             };
 
             stopwatchtot.Start();

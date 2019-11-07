@@ -7,15 +7,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Eval.Core
 {
     public abstract class EA
     {
-        public IEAConfiguration EAConfiguration { get; set; }
+        public IEAConfiguration EAConfiguration { get; set; } // TODO: when setting, need to handle config things like in ctor
 
         public event Action<int> NewGenerationEvent;
-        public event Action<IPhenotype> NewBestFitnessEvent;
+        public event Action<IPhenotype, int> NewBestFitnessEvent;
         public event Action<double> FitnessLimitReachedEvent;
         public event Action<int> GenerationLimitReachedEvent;
         public event Action<IPhenotype> PhenotypeEvaluatedEvent;
@@ -31,7 +32,7 @@ namespace Eval.Core
         protected IParentSelection ParentSelection;
         protected IAdultSelection AdultSelection;
         protected IRandomNumberGenerator RNG;
-        protected int Generation { get; private set; }
+        private int Generation { get; set; }
 
         public EA(IEAConfiguration configuration, IRandomNumberGenerator rng)
         {
@@ -43,11 +44,11 @@ namespace Eval.Core
             AdultSelection = CreateAdultSelection();
             ParentSelection = CreateParentSelection();
 
-            if (EAConfiguration.WorkerThreads > 1)
-            {
-                ThreadPool.SetMinThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
-                ThreadPool.SetMaxThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
-            }
+            //if (EAConfiguration.WorkerThreads > 1)
+            //{
+            //    ThreadPool.SetMinThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
+            //    ThreadPool.SetMaxThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
+            //}
         }
 
         protected abstract IPhenotype CreateRandomPhenotype();
@@ -98,13 +99,13 @@ namespace Eval.Core
             }
         }
 
-        public EAResult Evolve()
+        public virtual EAResult Evolve()
         {
             var population = CreateInitialPopulation(EAConfiguration.PopulationSize);
             var offspringSize = (int)(EAConfiguration.PopulationSize * Math.Max(EAConfiguration.OverproductionFactor, 1));
             var offspring = new Population(offspringSize);
 
-            population.Evaluate(EAConfiguration.ReevaluateElites, PhenotypeEvaluatedEvent);
+            CalculateFitnesses(population);
             Generation = 1;
 
             Best = null;
@@ -117,7 +118,7 @@ namespace Eval.Core
                 if (IsBetterThan(generationBest, Best))
                 {
                     Best = generationBest;
-                    NewBestFitnessEvent?.Invoke(Best);
+                    NewBestFitnessEvent?.Invoke(Best, Generation);
                 }
 
                 NewGenerationEvent?.Invoke(Generation);

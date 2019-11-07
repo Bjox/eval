@@ -58,7 +58,7 @@ namespace Eval.Test.Unit.EATests
             _ea.PhenotypeEvaluatedEvent += (p) => phenotypeEvaluatedEventCounter++;
 
             var newBestFitnessEventCounter = 0;
-            _ea.NewBestFitnessEvent += (p) => newBestFitnessEventCounter++;
+            _ea.NewBestFitnessEvent += (p, g) => newBestFitnessEventCounter++;
 
             var generationLimitReachedEventCounter = 0;
             _ea.GenerationLimitReachedEvent += (g) => generationLimitReachedEventCounter++;

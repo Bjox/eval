@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Eval.Examples.Hamming;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,9 +12,13 @@ namespace Eval.Examples
         static void Main(string[] args)
         {
             // Examples:
+
             //OneMaxEA.Run();
+
             //LOLZEA.Run();
-            HammingEA.Run();
+
+            //HammingEA.Run();
+            HammingOptimizer.Run();
         }
     }
 }

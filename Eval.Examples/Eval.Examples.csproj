@@ -23,6 +23,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>7.1</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -33,6 +34,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <LangVersion>7.1</LangVersion>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Eval.Examples.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -48,9 +53,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="HammingEA.cs" />
-    <Compile Include="LOLZEA.cs" />
-    <Compile Include="OneMaxEA.cs" />
+    <Compile Include="Hamming\HammingEA.cs" />
+    <Compile Include="Hamming\HammingOptimizer.cs" />
+    <Compile Include="LOLZ\LOLZEA.cs" />
+    <Compile Include="OneMax\OneMaxEA.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -59,6 +65,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Eval.ConfigOptimizer\Eval.ConfigOptimizer.csproj">
+      <Project>{124a31c5-0feb-42b3-9356-45590134d496}</Project>
+      <Name>Eval.ConfigOptimizer</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Eval.Core\Eval.Core.csproj">
       <Project>{47301d02-ab61-4fcc-95f6-4efd3df68e0f}</Project>
       <Name>Eval.Core</Name>
