@@ -9,11 +9,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Threading;
 
 namespace Eval.Examples
 {
-    [Serializable]
     class StringGenotype : Genotype
     {
         public string str;
@@ -93,7 +91,6 @@ namespace Eval.Examples
         
     }
 
-    [Serializable]
     class HammingPhenotype : Phenotype
     {
         private StringGenotype geno;
@@ -109,7 +106,6 @@ namespace Eval.Examples
             for (int i = 0; i < Math.Min(geno.str.Length, HammingEA.TARGET.Length); i++)
                 hammingdist += geno.str[i] == HammingEA.TARGET[i] ? 0 : 1;
             return hammingdist;
-            //return 1.0 / (hammingdist + 1);
         }
 
         public override string ToString()
@@ -122,10 +118,9 @@ namespace Eval.Examples
     /// Optimizes towards a given string. 
     /// This is a minimization problem using hamming distance for fitness function
     /// </summary>
-    [Serializable]
     public class HammingEA : EA
     {
-        public static string TARGET = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+        public static string TARGET = "Lorem ipsum dolor sit amet";
 
         public HammingEA(IEAConfiguration config, IRandomNumberGenerator rng) : base(config, rng)
         {}
@@ -150,22 +145,20 @@ namespace Eval.Examples
         {
             var config = new EAConfiguration
             {
-                PopulationSize = 250,
-                OverproductionFactor = 1.2,
+                PopulationSize = 100,
+                OverproductionFactor = 2.0,
                 MaximumGenerations = 100000,
                 CrossoverType = CrossoverType.OnePoint,
                 AdultSelectionType = AdultSelectionType.GenerationalMixing,
                 ParentSelectionType = ParentSelectionType.Tournament,
-                CrossoverRate = 0.18,
-                MutationRate = 0.97,
-                TournamentSize = 19,
-                TournamentProbability = 0.77,
+                CrossoverRate = 0.9,
+                MutationRate = 0.25,
+                TournamentSize = 10,
+                TournamentProbability = 0.8,
                 TargetFitness = 0.0,
                 Mode = EAMode.MinimizeFitness,
-                Elites = 2,
-                //CalculateStatistics = true,
-                //SnapshotGenerationInterval = 5000,
-                //SnapshotFilename = "snapshot.bin"
+                Elites = 1,
+                CalculateStatistics = true
             };
 
             var hammingEA = new HammingEA(config, new DefaultRandomNumberGenerator());
@@ -175,42 +168,32 @@ namespace Eval.Examples
 
             PopulationStatistics currentStats = new PopulationStatistics();
 
-            //hammingEA.PopulationStatisticsCalculated += (stats) =>
-            //{
-            //    currentStats = stats;
-            //};
-
-            //hammingEA.NewGenerationEvent += (gen) =>
-            //{
-            //    if (gen == 1000)
-            //    {
-            //        //hammingEA.SaveState("state.json");
-            //        //hammingEA.Serialize("state.bin");
-            //    }
-            //};
+            hammingEA.PopulationStatisticsCalculated += (stats) =>
+            {
+                currentStats = stats;
+            };
             
-            //hammingEA.NewBestFitnessEvent += (pheno) => {
-                
-            //    var gen = hammingEA.Generation;
-            //    double progress = (gen / (double)config.MaximumGenerations) * 100.0;
-            //    var totruntime = stopwatchtot.Elapsed;
-            //    var genruntime = stopwatchgen.Elapsed;
-            //    Console.WriteLine();
-            //    Console.WriteLine(string.Format("G# {0}    best_f: {1:F2}    avg_f: {2:F2}    SD: {3:F2}    Progress: {4,5:F2}    Gen: {5}   Tot: {6}", gen, hammingEA.Best.Fitness, currentStats.AverageFitness, currentStats.StandardDeviationFitness, progress, genruntime, totruntime));
-            //    Console.WriteLine("Generation winner: " + ((StringGenotype)hammingEA.Best?.Genotype));
-                
-            //    stopwatchgen.Restart();
-            //};
+            hammingEA.NewBestFitnessEvent += (pheno) => {
+                var gen = hammingEA.Generation;
+
+                double progress = (gen / (double)config.MaximumGenerations) * 100.0;
+                var totruntime = stopwatchtot.Elapsed;
+                var genruntime = stopwatchgen.Elapsed;
+                Console.WriteLine();
+                Console.WriteLine(string.Format("G# {0}    best_f: {1:F2}    avg_f: {2:F2}    SD: {3:F2}    Progress: {4,5:F2}    Gen: {5}   Tot: {6}", gen, hammingEA.Best.Fitness, currentStats.AverageFitness, currentStats.StandardDeviationFitness, progress, genruntime, totruntime));
+                Console.WriteLine("Generation winner: " + ((StringGenotype)hammingEA.Best?.Genotype));
+
+                stopwatchgen.Restart();
+            };
 
             stopwatchtot.Start();
             stopwatchgen.Start();
 
             var res = hammingEA.Evolve();
 
-            Console.WriteLine(stopwatchtot.Elapsed);
             Console.WriteLine("\n\nDone!");
             Console.WriteLine($"Winner: {res.Winner}");
-            //WriteResultToFile(hammingEA.PopulationStatistics);
+            WriteResultToFile(hammingEA.PopulationStatistics);
             Console.Read();
         }
             
