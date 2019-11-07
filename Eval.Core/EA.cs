@@ -51,8 +51,9 @@ namespace Eval.Core
         protected Population Population { get; private set; }
         private int _offspringSize;
         private Population _offspring;
-        private Stopwatch _stopwatch;
 
+        [NonSerialized]
+        private Stopwatch _stopwatch;
 
 
         public EA(IEAConfiguration configuration, IRandomNumberGenerator rng)

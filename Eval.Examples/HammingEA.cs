@@ -12,6 +12,7 @@ using System.Text;
 
 namespace Eval.Examples
 {
+    [Serializable]
     class StringGenotype : Genotype
     {
         public string str;
@@ -91,6 +92,7 @@ namespace Eval.Examples
         
     }
 
+    [Serializable]
     class HammingPhenotype : Phenotype
     {
         private StringGenotype geno;
@@ -118,6 +120,7 @@ namespace Eval.Examples
     /// Optimizes towards a given string. 
     /// This is a minimization problem using hamming distance for fitness function
     /// </summary>
+    [Serializable]
     public class HammingEA : EA
     {
         public static string TARGET = "Lorem ipsum dolor sit amet";
@@ -158,7 +161,9 @@ namespace Eval.Examples
                 TargetFitness = 0.0,
                 Mode = EAMode.MinimizeFitness,
                 Elites = 1,
-                CalculateStatistics = true
+                CalculateStatistics = true,
+                SnapshotFilename = "snapshot.bin",
+                SnapshotGenerationInterval = 5000
             };
 
             var hammingEA = new HammingEA(config, new DefaultRandomNumberGenerator());
