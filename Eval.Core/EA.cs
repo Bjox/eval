@@ -54,7 +54,17 @@ namespace Eval.Core
 
         [NonSerialized]
         private Stopwatch _stopwatch;
-
+        public TimeSpan Runtime 
+        {
+            get 
+            {
+                return Runtime + _stopwatch.Elapsed;
+            }
+            private set 
+            { 
+                Runtime = value; 
+            } 
+        }
 
         public EA(IEAConfiguration configuration, IRandomNumberGenerator rng)
         {
@@ -310,6 +320,7 @@ namespace Eval.Core
         /// <param name="filename"></param>
         public virtual void BinarySerialize(string filename)
         {
+            Runtime += _stopwatch.Elapsed;
             var stream = File.OpenWrite(filename);
             var formatter = new BinaryFormatter();
             formatter.Serialize(stream, this);
@@ -331,13 +342,13 @@ namespace Eval.Core
             this.ParentSelection = ea.ParentSelection;
             this.AdultSelection = ea.AdultSelection;
             this.Best = ea.Best;
-            //this.EAConfiguration = ea.EAConfiguration;
             this.Elites = ea.Elites;
             this.Generation = ea.Generation;
             this.GenerationalBest = ea.GenerationalBest;
             this.RNG = ea.RNG;
             this._offspring = ea._offspring;
             this._offspringSize = ea._offspringSize;
+            this.Runtime = ea.Runtime;
         }
     }
 
