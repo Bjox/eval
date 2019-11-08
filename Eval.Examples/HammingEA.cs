@@ -163,7 +163,7 @@ namespace Eval.Examples
                 Elites = 1,
                 CalculateStatistics = true,
                 SnapshotFilename = "snapshot.bin",
-                SnapshotGenerationInterval = 5000
+                SnapshotGenerationInterval = 100
             };
 
             var hammingEA = new HammingEA(config, new DefaultRandomNumberGenerator());

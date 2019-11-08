@@ -54,15 +54,16 @@ namespace Eval.Core
 
         [NonSerialized]
         private Stopwatch _stopwatch;
+        private TimeSpan _runtime;
         public TimeSpan Runtime 
         {
             get 
             {
-                return Runtime + _stopwatch.Elapsed;
+                return _runtime + _stopwatch.Elapsed;
             }
             private set 
-            { 
-                Runtime = value; 
+            {
+                _runtime = value; 
             } 
         }
 
@@ -337,6 +338,9 @@ namespace Eval.Core
             var formatter = new BinaryFormatter();
             var ea = (EA)formatter.Deserialize(stream);
             stream.Close();
+
+            AssertConfigurationCompatibility(ea.EAConfiguration);
+
             this.Population = ea.Population;
             this.PopulationStatistics = ea.PopulationStatistics;
             this.ParentSelection = ea.ParentSelection;
@@ -348,7 +352,13 @@ namespace Eval.Core
             this.RNG = ea.RNG;
             this._offspring = ea._offspring;
             this._offspringSize = ea._offspringSize;
-            this.Runtime = ea.Runtime;
+            this._runtime = ea._runtime;
+        }
+
+        public virtual void AssertConfigurationCompatibility(IEAConfiguration other)
+        {
+            if (EAConfiguration.PopulationSize != other.PopulationSize)
+                throw new ArgumentException("Population size cannot differ between snapshots. In snapshot: "+other.PopulationSize);
         }
     }
 
