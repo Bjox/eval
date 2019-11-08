@@ -2,7 +2,6 @@
 using Eval.Core.Models;
 using Eval.Core.Selection.Adult;
 using Eval.Core.Selection.Parent;
-using Eval.Core.Util;
 using Eval.Core.Util.EARandom;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Threading;
 
 namespace Eval.Core

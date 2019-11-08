@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Eval.Core.Config;
 using Eval.Core.Models;
 using Eval.Core.Util.EARandom;
