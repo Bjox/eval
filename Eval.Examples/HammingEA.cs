@@ -178,8 +178,7 @@ namespace Eval.Examples
                 currentStats = stats;
             };
             
-            //hammingEA.NewBestFitnessEvent += (pheno) => {
-            hammingEA.NewGenerationEvent += (g) => {
+            hammingEA.NewBestFitnessEvent += (pheno) => {
                 var gen = hammingEA.Generation;
 
                 double progress = (gen / (double)config.MaximumGenerations) * 100.0;
@@ -188,7 +187,6 @@ namespace Eval.Examples
                 Console.WriteLine();
                 Console.WriteLine(string.Format("G# {0}    best_f: {1:F2}    avg_f: {2:F2}    SD: {3:F2}    Progress: {4,5:F2}    Gen: {5}   Tot: {6}", gen, hammingEA.Best.Fitness, currentStats.AverageFitness, currentStats.StandardDeviationFitness, progress, genruntime, totruntime));
                 Console.WriteLine("Generation winner: " + ((StringGenotype)hammingEA.Best?.Genotype));
-                Console.WriteLine(hammingEA.Runtime);
 
                 stopwatchgen.Restart();
             };
