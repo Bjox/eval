@@ -7,12 +7,15 @@ using System.Linq;
 
 namespace Eval.Core.Models
 {
+
+    [Serializable]
     public class Population : IReadOnlyList<IPhenotype>
     {
         /// <summary>
         /// A flag that indiciates if the population is filled.
         /// </summary>
         public bool IsFilled { get; private set; }
+
         /// <summary>
         /// A sorted population will always have the best fitness (lowest or highest) at index 0.
         /// </summary>
@@ -28,9 +31,10 @@ namespace Eval.Core.Models
         /// </summary>
         public int Count => _index;
 
-        private readonly IPhenotype[] _population;
+        
+        private IPhenotype[] _population;
         private int _index;
-
+        
         public Population(int size)
         {
             _population = new IPhenotype[size];
@@ -279,5 +283,7 @@ namespace Eval.Core.Models
             ThrowIfNotFilled();
             return this[random.Next(Size)];
         }
+    
+
     }
 }

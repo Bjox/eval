@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Eval.Core.Models
 {
+    [Serializable]
     public abstract class Phenotype : IPhenotype
     {
         private double _fitness;
 
-        public bool IsEvaluated { get; private set; }
+        public bool IsEvaluated { get; set; }
         public IGenotype Genotype { get; }
         public double Fitness
         { 

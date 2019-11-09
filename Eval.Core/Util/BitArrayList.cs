@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Eval.Core.Util
 {
+    [Serializable]
     public class BitArrayList : IList<bool>, ICloneable
     {
         public BitArray BitArray { get; } // TODO: Optimize: create own implementation of BitArray

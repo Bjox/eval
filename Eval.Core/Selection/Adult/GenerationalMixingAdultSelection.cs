@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Eval.Core.Config;
 using Eval.Core.Models;
 using Eval.Core.Util.EARandom;
@@ -8,6 +6,7 @@ using Eval.Core.Util.Roulette;
 
 namespace Eval.Core.Selection.Adult
 {
+    [Serializable]
     public class GenerationalMixingAdultSelection : IAdultSelection
     {
         private readonly IRandomNumberGenerator _rng;

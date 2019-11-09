@@ -10,6 +10,7 @@ using Eval.Core.Util.Roulette;
 
 namespace Eval.Core.Selection.Parent
 {
+    [Serializable]
     public class SigmaScalingParentSelection : IParentSelection
     {
         private const double S = 1; // I think this is configurable, but keep it as is until we are sure.

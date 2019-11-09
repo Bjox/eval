@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Eval.Core.Models
 {
+    [Serializable]
     public class PopulationStatistics
     {
         public double MaxFitness { get; set; }

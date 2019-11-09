@@ -15,6 +15,7 @@ namespace Eval.Core.Models
     /// </summary>
     /// <typeparam name="AType">The array type</typeparam>
     /// <typeparam name="EType">The element type</typeparam>
+    [Serializable]
     public abstract class AbstractListGenotype<AType, EType> : Genotype, IReadOnlyList<EType>
         where AType : IList<EType>
     {

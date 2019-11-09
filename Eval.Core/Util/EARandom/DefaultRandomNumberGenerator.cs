@@ -4,6 +4,7 @@ using System.Text;
 
 namespace Eval.Core.Util.EARandom
 {
+    [Serializable]
     public class DefaultRandomNumberGenerator : Random, IRandomNumberGenerator
     {
         /// <summary>

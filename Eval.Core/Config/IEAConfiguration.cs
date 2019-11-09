@@ -122,5 +122,17 @@ namespace Eval.Core.Config
         /// Default value = 1
         /// </summary>
         int IOThreads { get; }
+        /// <summary>
+        /// Number of generations between each snapshot
+        /// 0 or less will deactivate snapshots
+        /// Default value = 0
+        /// </summary>
+        int SnapshotGenerationInterval { get; }
+        /// <summary>
+        /// Snapshot filename/full path to use.
+        /// If this file exists upon evolution start, it will try to resume last state.
+        /// Throws exception on serialization or deserialization failure
+        /// </summary>
+        string SnapshotFilename { get; }
     }
 }

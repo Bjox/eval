@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Eval.Core.Config;
 using Eval.Core.Models;
 
 namespace Eval.Core.Selection.Adult
 {
+    [Serializable]
     public class GenerationalReplacementAdultSelection : IAdultSelection
     {
         public void SelectAdults(Population offspring, Population population, int n, EAMode eamode)

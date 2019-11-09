@@ -8,6 +8,7 @@ using Eval.Core.Util.Roulette;
 
 namespace Eval.Core.Selection.Parent
 {
+    [Serializable]
     public class RankParentSelection : IParentSelection
     {
         public const double Min = 0.5;
