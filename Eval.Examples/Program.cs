@@ -1,4 +1,5 @@
 ﻿using Eval.Examples.Hamming;
+using Eval.Examples.MultithreadTest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace Eval.Examples
 
             //HammingEA.Run();
             HammingOptimizer.Run();
+
+            //ThreadEA.Run();
         }
     }
 }

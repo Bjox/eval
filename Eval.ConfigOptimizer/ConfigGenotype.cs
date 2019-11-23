@@ -30,6 +30,9 @@ namespace Eval.ConfigOptimizer
         public int WorkerThreads => 1;
         public int IOThreads => 1;
 
+        public int SnapshotGenerationInterval => 0;
+        public string SnapshotFilename => throw new NotImplementedException();
+
         public ConfigGenotype()
             : base(builder => builder
                 .DefineParameter(configGenotype => configGenotype.PopulationSize, 10, 200)

@@ -76,11 +76,11 @@ namespace Eval.Core
             AdultSelection = CreateAdultSelection();
             ParentSelection = CreateParentSelection();
 
-            //if (EAConfiguration.WorkerThreads > 1)
-            //{
-            //    ThreadPool.SetMinThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
-            //    ThreadPool.SetMaxThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
-            //}
+            if (EAConfiguration.WorkerThreads > 1) // TODO: ThreadPool cannot have less threads than cpu. FIX ASAP!
+            {
+                ThreadPool.SetMinThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
+                ThreadPool.SetMaxThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
+            }
         }
 
         protected abstract IPhenotype CreateRandomPhenotype();
@@ -149,7 +149,7 @@ namespace Eval.Core
                 _offspringSize = (int)(EAConfiguration.PopulationSize * Math.Max(EAConfiguration.OverproductionFactor, 1));
                 _offspring = new Population(_offspringSize);
 
-                CalculateFitnesses(population);
+                CalculateFitnesses(Population);
                 Generation = 1;
 
                 Best = null;
