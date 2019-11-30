@@ -134,12 +134,6 @@ namespace Eval.Test.Unit.EATests
             return newgeno;
         }
 
-        public override bool Equals(object obj)
-        {
-            var genotype = obj as StringGenotype;
-            return genotype != null && str == genotype.str;
-        }
-
         public override int GetHashCode()
         {
             return -1349951472 + EqualityComparer<string>.Default.GetHashCode(str);

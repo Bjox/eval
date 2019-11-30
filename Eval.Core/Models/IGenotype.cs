@@ -24,12 +24,6 @@ namespace Eval.Core.Models
         /// <param name="probability"></param>
         /// <param name="random"></param>
         void Mutate(double probability, IRandomNumberGenerator random);
-        /// <summary>
-        /// Performs a value-equality check.
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <returns></returns>
-        bool Equals(object obj);
         int GetHashCode();
     }
 }
