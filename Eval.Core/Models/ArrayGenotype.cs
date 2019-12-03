@@ -7,8 +7,6 @@ namespace Eval.Core.Models
 {
     public interface IGenotypeElement : ICloneable
     {
-        bool Equals(object obj);
-        int GetHashCode();
         void Mutate(double factor, IRandomNumberGenerator random);
     }
 

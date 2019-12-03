@@ -51,11 +51,6 @@ namespace Eval.Examples
             return newgeno;
         }
 
-        public override int GetHashCode()
-        {
-            return -1349951472 + EqualityComparer<string>.Default.GetHashCode(str);
-        }
-
         public override void Mutate(double probability, IRandomNumberGenerator random)
         {
             if (random.NextDouble() >= probability)

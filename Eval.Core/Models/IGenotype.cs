@@ -24,6 +24,5 @@ namespace Eval.Core.Models
         /// <param name="probability"></param>
         /// <param name="random"></param>
         void Mutate(double probability, IRandomNumberGenerator random);
-        int GetHashCode();
     }
 }
