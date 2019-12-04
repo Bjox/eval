@@ -27,7 +27,7 @@ namespace Eval.ConfigOptimizer
         public EAMode Mode { get; set; }
 
         public bool CalculateStatistics => false;
-        public bool MultiThreaded { get; set; }
+        public bool MultiThreaded => false;
 
         public int SnapshotGenerationInterval => 0;
         public string SnapshotFilename => throw new NotImplementedException();
