@@ -69,8 +69,7 @@ namespace Eval.Examples.MultithreadTest
                 Elites = 0,
                 CalculateStatistics = true,
                 ReevaluateElites = false,
-                WorkerThreads = 16,
-                IOThreads = 16
+                MultiThreaded = true
             };
             var ea = new ThreadEA(config, new DefaultRandomNumberGenerator());
             ea.NewGenerationEvent += gen => Console.WriteLine($"Generation {gen}");

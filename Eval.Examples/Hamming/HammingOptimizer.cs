@@ -59,8 +59,7 @@ namespace Eval.Examples.Hamming
         {
             var optimizerConfig = DefaultOptimizerConfig;
             optimizerConfig.PopulationSize = 100;
-            optimizerConfig.WorkerThreads = 16;
-            optimizerConfig.IOThreads = 16;
+            optimizerConfig.MultiThreaded = true;
 
             var optimizer = new HammingOptimizer(optimizerConfig, new DefaultRandomNumberGenerator());
             optimizer.Evolve();

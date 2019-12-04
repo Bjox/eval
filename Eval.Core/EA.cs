@@ -75,12 +75,6 @@ namespace Eval.Core
             Elites = new List<IPhenotype>(Math.Max(EAConfiguration.Elites, 0));
             AdultSelection = CreateAdultSelection();
             ParentSelection = CreateParentSelection();
-
-            if (EAConfiguration.WorkerThreads > 1) // TODO: ThreadPool cannot have less threads than cpu. FIX ASAP!
-            {
-                ThreadPool.SetMinThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
-                ThreadPool.SetMaxThreads(EAConfiguration.WorkerThreads, EAConfiguration.IOThreads);
-            }
         }
 
         protected abstract IPhenotype CreateRandomPhenotype();
@@ -270,7 +264,7 @@ namespace Eval.Core
 
         protected virtual void CalculateFitnesses(Population population)
         {
-            if (EAConfiguration.WorkerThreads <= 1)
+            if (!EAConfiguration.MultiThreaded)
             {
                 foreach (var p in population)
                 {

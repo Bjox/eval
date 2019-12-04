@@ -111,17 +111,9 @@ namespace Eval.Core.Config
         /// </summary>
         bool CalculateStatistics { get; }
         /// <summary>
-        /// Maximum number of worker threads to use when evaluating population.<br></br>
-        /// Must be greater than or equal to 1<br></br>
-        /// Default value = 1
+        /// Use ThreadPool for multithreading
         /// </summary>
-        int WorkerThreads { get; }
-        /// <summary>
-        /// Maximum number of IO threads to use when evaluating population.<br></br>
-        /// Must be greater than or equal to 1<br></br>
-        /// Default value = 1
-        /// </summary>
-        int IOThreads { get; }
+        bool MultiThreaded { get; }
         /// <summary>
         /// Number of generations between each snapshot
         /// 0 or less will deactivate snapshots

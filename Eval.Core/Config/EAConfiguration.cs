@@ -27,8 +27,7 @@ namespace Eval.Core.Config
         public double RankSelectionMinProbability { get; set; }
         public double RankSelectionMaxProbability { get; set; }
         public bool CalculateStatistics { get; set; } = false;
-        public int WorkerThreads { get; set; } = 1;
-        public int IOThreads { get; set; } = 1;
+        public bool MultiThreaded { get; set; } = false;
         public int SnapshotGenerationInterval { get; set; }
         public string SnapshotFilename { get; set; }
 
