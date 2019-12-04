@@ -89,8 +89,7 @@ namespace Eval.ConfigOptimizer
             Mode = EAMode.MaximizeFitness,
             Elites = 1,
             CalculateStatistics = true,
-            WorkerThreads = 16,
-            IOThreads = 16,
+            MultiThreaded = true,
             ReevaluateElites = false
         };
     }
