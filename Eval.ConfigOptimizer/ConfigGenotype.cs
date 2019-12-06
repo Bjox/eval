@@ -32,7 +32,7 @@ namespace Eval.ConfigOptimizer
         public int SnapshotGenerationInterval => 0;
         public string SnapshotFilename => throw new NotImplementedException();
 
-        TimeSpan? IEAConfiguration.MaxDuration => null;
+        public TimeSpan? MaxDuration => null;
 
         public ConfigGenotype()
             : base(builder => builder
