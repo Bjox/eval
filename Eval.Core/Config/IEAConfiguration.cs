@@ -1,6 +1,7 @@
 ﻿using Eval.Core.Models;
 using Eval.Core.Selection.Adult;
 using Eval.Core.Selection.Parent;
+using System;
 
 namespace Eval.Core.Config
 {
@@ -126,5 +127,11 @@ namespace Eval.Core.Config
         /// Throws exception on serialization or deserialization failure
         /// </summary>
         string SnapshotFilename { get; }
+        /// <summary>
+        /// Maximum duration of the evolution.
+        /// The evolution will stop at the end of the ongoing generation
+        /// when total runtime is greater than this timespan
+        /// </summary>
+        TimeSpan? MaxDuration { get; }
     }
 }

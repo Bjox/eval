@@ -30,6 +30,7 @@ namespace Eval.Core.Config
         public bool MultiThreaded { get; set; } = false;
         public int SnapshotGenerationInterval { get; set; }
         public string SnapshotFilename { get; set; }
+        public TimeSpan? MaxDuration { get; set; }
 
 
         public static EAConfiguration ReadConfigurationFromFile(string filePath)

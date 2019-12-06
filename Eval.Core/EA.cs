@@ -23,13 +23,9 @@ namespace Eval.Core
         [field: NonSerialized]
         public event Action<IPhenotype, int> NewBestFitnessEvent;
         [field: NonSerialized]
-        public event Action<double> FitnessLimitReachedEvent;
-        [field: NonSerialized]
-        public event Action<int> GenerationLimitReachedEvent;
+        public event Action<TerminationReason> TerminationEvent;
         [field: NonSerialized]
         public event Action<IPhenotype> PhenotypeEvaluatedEvent;
-        [field: NonSerialized]
-        public event Action AbortedEvent;
         [field: NonSerialized]
         public event Action<PopulationStatistics> PopulationStatisticsCalculated;
 
@@ -233,18 +229,23 @@ namespace Eval.Core
         {
             if (Abort)
             {
-                AbortedEvent?.Invoke();
+                TerminationEvent?.Invoke(TerminationReason.Aborted);
+                return false;
+            }
+            if (EAConfiguration.MaxDuration != null && GetDuration > EAConfiguration.MaxDuration)
+            {
+                TerminationEvent?.Invoke(TerminationReason.DurationLimitReached);
                 return false;
             }
             if (generation >= EAConfiguration.MaximumGenerations)
             {
-                GenerationLimitReachedEvent?.Invoke(generation);
+                TerminationEvent?.Invoke(TerminationReason.GenerationLimitReached);
                 return false;
             }
             if ((EAConfiguration.Mode == EAMode.MaximizeFitness && Best.Fitness >= EAConfiguration.TargetFitness) ||
                 (EAConfiguration.Mode == EAMode.MinimizeFitness && Best.Fitness <= EAConfiguration.TargetFitness))
             {
-                FitnessLimitReachedEvent?.Invoke(Best.Fitness);
+                TerminationEvent?.Invoke(TerminationReason.FitnessLimitReached);
                 return false;
             }
             return true;

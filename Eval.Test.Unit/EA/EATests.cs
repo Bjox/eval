@@ -63,7 +63,11 @@ namespace Eval.Test.Unit.EATests
             _ea.NewBestFitnessEvent += (p, g) => newBestFitnessEventCounter++;
 
             var generationLimitReachedEventCounter = 0;
-            _ea.GenerationLimitReachedEvent += (g) => generationLimitReachedEventCounter++;
+            _ea.TerminationEvent += (r) =>
+            {
+                if (r == TerminationReason.GenerationLimitReached)
+                    generationLimitReachedEventCounter++;
+            };
 
             _ea.Evolve();
 
@@ -153,6 +157,24 @@ namespace Eval.Test.Unit.EATests
             _ea.Evolve();
 
             File.Delete(filename);
+        }
+
+        [TestMethod]
+        public void TestDurationTermination_ShouldTerminateWhenMaxDurationHasPassed()
+        {
+            var ok = false;
+            _config.MaximumGenerations = 500000;
+            _config.MaxDuration = new TimeSpan(0, 0, 1);
+            _ea = new TestEA(_config, new DefaultRandomNumberGenerator());
+            _ea.TerminationEvent += (r) =>
+            {
+                if (r == TerminationReason.DurationLimitReached)
+                    ok = true;
+            };
+            _ea.Evolve();
+
+            Assert.IsTrue(ok);
+            Assert.IsTrue(_ea.GetDuration < new TimeSpan(0, 0, 2));
         }
     }
 
