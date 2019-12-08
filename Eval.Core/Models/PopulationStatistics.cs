@@ -12,5 +12,10 @@ namespace Eval.Core.Models
         public double AverageFitness { get; set; }
         public double VarianceFitness { get; set; }
         public double StandardDeviationFitness { get; set; }
+
+        public override string ToString()
+        {
+            return $"Max: {MaxFitness}   Min: {MinFitness}   Avg: {AverageFitness:0.0}   Var: {VarianceFitness:0.0}   Std: {StandardDeviationFitness:0.0}";
+        }
     }
 }

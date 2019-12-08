@@ -32,7 +32,9 @@ namespace Eval.Test.Unit.Selection.Parent
                     TournamentProbability = 0.5
                 };
 
+#pragma warning disable CS0618 // Type or member is obsolete
                 var oldselection = new TournamentParentSelectionOld(config);
+#pragma warning restore CS0618 // Type or member is obsolete
                 var oldselected = oldselection.SelectParents(population, 275000, EAMode.MaximizeFitness, random);
 
                 foreach (var (a, b) in oldselected)
@@ -79,7 +81,9 @@ namespace Eval.Test.Unit.Selection.Parent
 
             var watch = new Stopwatch();
             watch.Start();
+#pragma warning disable CS0618 // Type or member is obsolete
             IParentSelection selection = new TournamentParentSelectionOld(config);
+#pragma warning restore CS0618 // Type or member is obsolete
             foreach (var selected in selection.SelectParents(pop, popsize, EAMode.MaximizeFitness, random))
             {
             }
