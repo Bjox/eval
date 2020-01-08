@@ -203,7 +203,7 @@ namespace Eval.Core
             _stopwatch.Stop();
             return new EAResult
             {
-                Winner = Population[0],
+                Winner = Best,
                 EndPopulation = Population
             };
         }
