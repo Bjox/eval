@@ -178,9 +178,10 @@ namespace Eval.Examples
                 stopwatchgen.Restart();
             };
 
-            hammingEA.FitnessLimitReachedEvent += (fitness) =>
+            hammingEA.TerminationEvent += (r) =>
             {
-                Console.WriteLine($"Fitness limit reached: {fitness}");
+                if (r == TerminationReason.FitnessLimitReached)
+                    Console.WriteLine($"Fitness limit reached: {hammingEA.Best.Fitness}");
             };
 
             stopwatchtot.Start();

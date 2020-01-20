@@ -12,7 +12,7 @@ namespace Eval.Core.Config
     {
         public int PopulationSize { get; set; }
         public double OverproductionFactor { get; set; }
-        public int MaximumGenerations { get; set; }
+        public int MaximumGenerations { get; set; } = int.MaxValue;
         public CrossoverType CrossoverType { get; set;  }
         public AdultSelectionType AdultSelectionType { get; set; }
         public ParentSelectionType ParentSelectionType { get; set; }
@@ -30,6 +30,7 @@ namespace Eval.Core.Config
         public bool MultiThreaded { get; set; } = false;
         public int SnapshotGenerationInterval { get; set; }
         public string SnapshotFilename { get; set; }
+        public TimeSpan? MaxDuration { get; set; }
 
 
         public static EAConfiguration ReadConfigurationFromFile(string filePath)

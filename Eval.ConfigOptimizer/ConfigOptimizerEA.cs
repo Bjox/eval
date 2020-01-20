@@ -31,8 +31,13 @@ namespace Eval.ConfigOptimizer
                     Console.WriteLine();
                 };
                 NewGenerationEvent += (gen) => Console.Write($"-{gen}");
-                FitnessLimitReachedEvent += (fitness) => Console.WriteLine($"\nFitness limit reached ({fitness})");
-                GenerationLimitReachedEvent += (gen) => Console.WriteLine($"\nGeneration limit reached ({gen})");
+                TerminationEvent += (reason) =>
+                {
+                    if (reason == TerminationReason.FitnessLimitReached)
+                        Console.WriteLine($"\nFitness limit reached ({this.Best.Fitness})");
+                    else if (reason == TerminationReason.GenerationLimitReached)
+                        Console.WriteLine($"\nGeneration limit reached ({this.Generation})");
+                };
             }
         }
 

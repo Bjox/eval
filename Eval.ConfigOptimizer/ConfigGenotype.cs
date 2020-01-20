@@ -32,6 +32,8 @@ namespace Eval.ConfigOptimizer
         public int SnapshotGenerationInterval => 0;
         public string SnapshotFilename => throw new NotImplementedException();
 
+        public TimeSpan? MaxDuration => null;
+
         public ConfigGenotype()
             : base(builder => builder
                 .DefineParameter(configGenotype => configGenotype.PopulationSize, 10, 200)

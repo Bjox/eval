@@ -40,7 +40,11 @@ namespace Eval.Test.Unit.EATests
             for (int i = 0; i < 100; i++)
             {
                 var onemaxEA = new OneMaxEA(config, new DefaultRandomNumberGenerator());
-                onemaxEA.FitnessLimitReachedEvent += (fitness) => fitnesslimitCounter++;
+                onemaxEA.TerminationEvent += (r) =>
+                {
+                    if (r == TerminationReason.FitnessLimitReached)
+                        fitnesslimitCounter++;
+                };
                 var res = onemaxEA.Evolve();
             }
 

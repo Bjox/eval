@@ -41,7 +41,11 @@ namespace Eval.Test.Unit.EATests
             for (int i = 0; i < 10; i++)
             {
                 var hammingEA = new HammingEA(config, new DefaultRandomNumberGenerator());
-                hammingEA.FitnessLimitReachedEvent += (fitness) => fitnesslimitCounter++;
+                hammingEA.TerminationEvent += (r) =>
+                {
+                    if (r == TerminationReason.FitnessLimitReached)
+                        fitnesslimitCounter++;
+                };
                 var res = hammingEA.Evolve();
             }
 
