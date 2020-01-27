@@ -61,6 +61,29 @@ namespace Eval.Test.Unit.Selection.Parent
             }
         }
 
+        [TestMethod]
+        public void TournamentSelection_RandomBoundsBug()
+        {
+            var selection = new TournamentParentSelection(new EAConfiguration
+            {
+                TournamentSize = 10,
+                TournamentProbability = 2
+            });
+            var pop = new Population(10);
+            pop.Fill(() => CreatePhenotypeMock(1).Object);
+            pop.Sort(EAMode.MaximizeFitness);
+
+            // NextDouble() returns 0
+            var randomMock = new Mock<IRandomNumberGenerator>();
+            randomMock.Setup(rng => rng.NextDouble()).Returns(0);
+            selection.Invoking(x => x.SelectParents(pop, 1, EAMode.MaximizeFitness, randomMock.Object).ToList()).Should().NotThrow();
+
+            // NextDouble() returns the highest IEEE 754 float (binary64) less than 1
+            randomMock = new Mock<IRandomNumberGenerator>();
+            randomMock.Setup(rng => rng.NextDouble()).Returns(BitConverter.Int64BitsToDouble(0x3FE_FFFFFFFFFFFFF));
+            selection.Invoking(x => x.SelectParents(pop, 1, EAMode.MaximizeFitness, randomMock.Object).ToList()).Should().NotThrow();
+        }
+
         [TestMethod, Ignore]
         public void TournamentSelection_PerfTest()
         {

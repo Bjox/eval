@@ -56,7 +56,7 @@ namespace Eval.Core.Selection.Parent
                 // Simulate selecting the best from a tournament
                 var normalizedSelection = 1.0 - Math.Pow(random.NextDouble(), 1.0 / _tournamentSize);
                 var selectedIndex = (int)(normalizedSelection * population.Size);
-                return population[selectedIndex];
+                return population[Math.Min(selectedIndex, population.Size - 1)];
             } 
             else
             {
