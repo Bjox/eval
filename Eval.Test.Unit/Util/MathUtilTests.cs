@@ -6,6 +6,7 @@
  * Read full license terms in the accompanying LICENSE file or at https://opensource.org/licenses/MIT
  */
 #endregion
+
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Eval.Core.Util;
