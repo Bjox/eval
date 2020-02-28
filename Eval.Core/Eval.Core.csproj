@@ -5,10 +5,12 @@
     <LangVersion>7.1</LangVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IncludeSymbols>true</IncludeSymbols>
-    <Version>2.0.1</Version>
-    <Company>Eval</Company>
+    <Version>2.0.2</Version>
+    <Company>Yeskis</Company>
     <Product>Eval</Product>
-    <Authors>Eval</Authors>
+    <Authors>Endre Larsen, Viktor Zoric, Bjørnar Alvestad</Authors>
+    <Description>An evolutionary algorithms-library for .NET</Description>
+    <Copyright>All rights reserved</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
