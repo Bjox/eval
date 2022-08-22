@@ -7,21 +7,19 @@
  */
 #endregion
 
+using Eval.Examples;
 using Eval.Examples.Hamming;
 using Eval.Examples.MultithreadTest;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-// Examples:
+// These examples should run as is and complete within seconds:
 
-//OneMaxEA.Run();
-
+OneMaxEA.Run();
 //LOLZEA.Run();
-
 //HammingEA.Run();
-HammingOptimizer.Run();
+
+
+
+// These examples are experimental and intended only for dev:
 
 //ThreadEA.Run();
+//HammingOptimizer.Run();
