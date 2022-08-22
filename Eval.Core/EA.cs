@@ -208,8 +208,6 @@ namespace Eval.Core
                 Generation++;
             }
 
-            CalculateStatistics(Population);
-
             IsRunning = false;
             _stopwatch.Stop();
             return new EAResult
