@@ -104,7 +104,7 @@ namespace Eval.Test.Unit.Util
                 new Entry(100),
             };
 
-            AssertCount(elements, 100);
+            AssertCount(elements, spins: 100);
         }
 
         [TestMethod]
@@ -116,7 +116,7 @@ namespace Eval.Test.Unit.Util
                 elements[i] = new Entry(random.NextDouble() * 100 + 100);
             }
 
-            AssertCount(elements);
+            AssertCount(elements, spins: 100_000_000);
         }
 
         [TestMethod]
@@ -159,7 +159,7 @@ namespace Eval.Test.Unit.Util
             {
                 var expectedCount = (element.Probability / probabilitySum) * spins;
                 var actualCount = (double)element.Count;
-                actualCount.Should().BeApproximately(expectedCount, expectedCount * 0.1 + 100);
+                actualCount.Should().BeApproximately(expectedCount, expectedCount * 0.1 + 10);
 
                 //var expectedProbability = element.Probability / probabilitySum;
                 //var actualProbability = element.Count / (double)spins;
