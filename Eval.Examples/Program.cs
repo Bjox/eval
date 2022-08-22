@@ -15,22 +15,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Eval.Examples
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            // Examples:
+// Examples:
 
-            //OneMaxEA.Run();
+//OneMaxEA.Run();
 
-            //LOLZEA.Run();
+//LOLZEA.Run();
 
-            //HammingEA.Run();
-            HammingOptimizer.Run();
+//HammingEA.Run();
+HammingOptimizer.Run();
 
-            //ThreadEA.Run();
-        }
-    }
-}
+//ThreadEA.Run();
