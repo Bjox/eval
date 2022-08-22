@@ -56,10 +56,10 @@ namespace Eval.Test.Unit.Models
                 .Returns(0);
 
             ((BinaryGenotype)g1.CrossoverWith(g2, CrossoverType.OnePoint, randomMock.Object))
-                .Should().AllBeEquivalentTo(1);
+                .Should().AllBeEquivalentTo(true);
 
             ((BinaryGenotype)g2.CrossoverWith(g1, CrossoverType.OnePoint, randomMock.Object))
-                .Should().AllBeEquivalentTo(0);
+                .Should().AllBeEquivalentTo(false);
         }
 
         [TestMethod]
@@ -69,10 +69,10 @@ namespace Eval.Test.Unit.Models
                 .Returns(genoLength);
 
             ((BinaryGenotype)g1.CrossoverWith(g2, CrossoverType.OnePoint, randomMock.Object))
-                .Should().AllBeEquivalentTo(0);
+                .Should().AllBeEquivalentTo(false);
 
             ((BinaryGenotype)g2.CrossoverWith(g1, CrossoverType.OnePoint, randomMock.Object))
-                .Should().AllBeEquivalentTo(1);
+                .Should().AllBeEquivalentTo(true);
         }
 
         [TestMethod]

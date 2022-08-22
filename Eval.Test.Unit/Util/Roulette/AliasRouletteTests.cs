@@ -159,7 +159,7 @@ namespace Eval.Test.Unit.Util
             {
                 var expectedCount = (element.Probability / probabilitySum) * spins;
                 var actualCount = (double)element.Count;
-                actualCount.Should().BeApproximately(expectedCount, expectedCount * 0.1 + 10);
+                actualCount.Should().BeApproximately(expectedCount, expectedCount * 0.1 + 100);
 
                 //var expectedProbability = element.Probability / probabilitySum;
                 //var actualProbability = element.Count / (double)spins;
