@@ -15,7 +15,7 @@ using System;
 
 namespace Eval.Core.Selection.Adult
 {
-    [Serializable]
+    
     public class OverproductionAdultSelection : IAdultSelection
     {
         private readonly IRandomNumberGenerator _rng;

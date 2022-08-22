@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace Eval.Examples
 {
-    [Serializable]
+    
     class LOLZPhenotype : Phenotype
     {
         private int _Z;
@@ -66,7 +66,7 @@ namespace Eval.Examples
     /// but introduces a local maxima when the bitstring has leading zeroes.
     /// With leading zeroes the fitness is only evaluated up to a given point Z in the bitstring.
     /// </summary>
-    [Serializable]
+    
     public class LOLZEA : EA
     {
         private int _bitcount = 40;

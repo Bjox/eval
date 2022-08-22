@@ -18,7 +18,7 @@ namespace Eval.Core.Models
     /// <summary>
     /// A binary genotype of fixed length. Bits are efficiently stored in a BitArrayList.
     /// </summary>
-    [Serializable]
+    
     public class BinaryGenotype : AbstractListGenotype<BitArrayList, bool>
     {
         public BitArrayList Bits => Elements;

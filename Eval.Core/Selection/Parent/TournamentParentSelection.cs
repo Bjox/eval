@@ -16,7 +16,7 @@ using Eval.Core.Util.EARandom;
 
 namespace Eval.Core.Selection.Parent
 {
-    [Serializable]
+    
     public class TournamentParentSelection : IParentSelection
     {
         private readonly int _tournamentSize;

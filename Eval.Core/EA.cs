@@ -24,18 +24,13 @@ using System.Threading.Tasks;
 namespace Eval.Core
 {
 
-    [Serializable]
+    
     public abstract class EA
     {
-        [field: NonSerialized]
         public event Action<int> NewGenerationEvent;
-        [field: NonSerialized]
         public event Action<IPhenotype, int> NewBestFitnessEvent;
-        [field: NonSerialized]
         public event Action<TerminationReason> TerminationEvent;
-        [field: NonSerialized]
         public event Action<IPhenotype> PhenotypeEvaluatedEvent;
-        [field: NonSerialized]
         public event Action<PopulationStatistics> PopulationStatisticsCalculated;
 
         public IEAConfiguration EAConfiguration { get; set; }
@@ -136,27 +131,17 @@ namespace Eval.Core
             IsRunning = true;
             IsStarted = true;
 
-            if (EAConfiguration.SnapshotGenerationInterval > 0 
-                && !string.IsNullOrEmpty(EAConfiguration.SnapshotFilename)
-                && File.Exists(EAConfiguration.SnapshotFilename))
-            {
-                BinaryDeserialize(EAConfiguration.SnapshotFilename);
-            }
-            else
-            {
-                Population = CreateInitialPopulation(EAConfiguration.PopulationSize);
-                _offspringSize = (int)(EAConfiguration.PopulationSize * Math.Max(EAConfiguration.OverproductionFactor, 1));
-                _offspring = new Population(_offspringSize);
+            Population = CreateInitialPopulation(EAConfiguration.PopulationSize);
+            _offspringSize = (int)(EAConfiguration.PopulationSize * Math.Max(EAConfiguration.OverproductionFactor, 1));
+            _offspring = new Population(_offspringSize);
 
-                CalculateFitnesses(Population);
-                Generation = 1;
+            CalculateFitnesses(Population);
+            Generation = 1;
 
-                Best = null;
-            }
+            Best = null;
 
             while (true)
             {
-                Serialize();
                 Population.Sort(EAConfiguration.Mode);
                 var generationBest = Population.First();
 
@@ -305,56 +290,6 @@ namespace Eval.Core
             PhenotypeEvaluatedEvent?.Invoke(pheno);
 
             countdownEvent.Signal();
-        }
-
-        private void Serialize()
-        {
-            if (EAConfiguration.SnapshotGenerationInterval <= 0
-                || Generation % EAConfiguration.SnapshotGenerationInterval != 0
-                && Generation != 1) // run on first generation as a test in case some class is missing [Serializable]
-                return;
-
-            BinarySerialize(EAConfiguration.SnapshotFilename);
-        }
-
-        /// <summary>
-        /// Throws exception on serialization failure
-        /// </summary>
-        /// <param name="filename"></param>
-        public virtual void BinarySerialize(string filename)
-        {
-            Runtime += _stopwatch.Elapsed;
-            var stream = File.OpenWrite(filename);
-            var formatter = new BinaryFormatter();
-            formatter.Serialize(stream, this);
-            stream.Close();
-        }
-
-        /// <summary>
-        /// Throws exception on deserialization failure
-        /// </summary>
-        /// <param name="filename"></param>
-        public virtual void BinaryDeserialize(string filename)
-        {
-            var stream = File.OpenRead(filename);
-            var formatter = new BinaryFormatter();
-            var ea = (EA)formatter.Deserialize(stream);
-            stream.Close();
-
-            AssertConfigurationCompatibility(ea.EAConfiguration);
-
-            this.Population = ea.Population;
-            this.PopulationStatistics = ea.PopulationStatistics;
-            this.ParentSelection = ea.ParentSelection;
-            this.AdultSelection = ea.AdultSelection;
-            this.Best = ea.Best;
-            this.Elites = ea.Elites;
-            this.Generation = ea.Generation;
-            this.GenerationalBest = ea.GenerationalBest;
-            this.RNG = ea.RNG;
-            this._offspring = ea._offspring;
-            this._offspringSize = ea._offspringSize;
-            this._runtime = ea._runtime;
         }
 
         public virtual void AssertConfigurationCompatibility(IEAConfiguration other)

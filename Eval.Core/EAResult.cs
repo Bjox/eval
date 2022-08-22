@@ -12,7 +12,7 @@ using System;
 
 namespace Eval.Core
 {
-    [Serializable]
+    
     public class EAResult
     {
         public IPhenotype Winner { get; set; }

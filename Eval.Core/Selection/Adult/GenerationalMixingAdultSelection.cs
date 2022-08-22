@@ -15,7 +15,7 @@ using Eval.Core.Util.Roulette;
 
 namespace Eval.Core.Selection.Adult
 {
-    [Serializable]
+    
     public class GenerationalMixingAdultSelection : IAdultSelection
     {
         private readonly IRandomNumberGenerator _rng;

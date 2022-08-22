@@ -12,7 +12,7 @@ using Eval.Core.Util.EARandom;
 
 namespace Eval.Core.Models
 {
-    [Serializable]
+    
     public abstract class Genotype : IGenotype
     {
         public abstract IGenotype Clone();

@@ -107,68 +107,6 @@ namespace Eval.Test.Unit.EATests
         }
 
         [TestMethod]
-        public void TestSerialization_FileShouldExist()
-        {
-            var filename = "testsnap.bin";
-
-            if (File.Exists(filename))
-                File.Delete(filename);
-
-            _config.SnapshotFilename = filename;
-            _config.SnapshotGenerationInterval = 1;
-            _config.MaximumGenerations = 2;
-
-            _ea = new TestEA(_config, new DefaultRandomNumberGenerator());
-            _ea.Evolve();
-            File.Exists(filename).Should().BeTrue();
-            File.Delete(filename);
-        }
-
-        [TestMethod]
-        public void TestSerialization_FileShouldNotExist_WhenDeactivated()
-        {
-            var filename = "testsnap.bin";
-
-            if (File.Exists(filename))
-                File.Delete(filename);
-
-            _config.SnapshotFilename = filename;
-            _config.SnapshotGenerationInterval = 0;
-            _config.MaximumGenerations = 2;
-
-            _ea = new TestEA(_config, new DefaultRandomNumberGenerator());
-            _ea.Evolve();
-            File.Exists(filename).Should().BeFalse();
-        }
-
-        [TestMethod]
-        public void TestSerialization_ShouldContinueWhereLeftOff()
-        {
-            var filename = "testsnap.bin";
-
-            if (File.Exists(filename))
-                File.Delete(filename);
-
-            _config.SnapshotFilename = filename;
-            _config.SnapshotGenerationInterval = 1;
-            _config.MaximumGenerations = 5;
-
-            _ea = new TestEA(_config, new DefaultRandomNumberGenerator());
-            _ea.Evolve();
-            File.Exists(filename).Should().BeTrue();
-
-            _config.MaximumGenerations = 10;
-            _ea = new TestEA(_config, new DefaultRandomNumberGenerator());
-            _ea.NewGenerationEvent += (g) =>
-            {
-                g.Should().BeGreaterOrEqualTo(5);
-            };
-            _ea.Evolve();
-
-            File.Delete(filename);
-        }
-
-        [TestMethod]
         public void TestDurationTermination_ShouldTerminateWhenMaxDurationHasPassed()
         {
             var ok = false;
@@ -188,7 +126,7 @@ namespace Eval.Test.Unit.EATests
     }
 
     
-    [Serializable]
+    
     class TestPhenotype : Phenotype
     {
         
@@ -206,7 +144,7 @@ namespace Eval.Test.Unit.EATests
         }
     }
 
-    [Serializable]
+    
     class TestEA : EA
     {
         public int bits = 10;

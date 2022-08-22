@@ -23,7 +23,7 @@ namespace Eval.Core.Models
     /// A genotype represented by objects stored in an <c>Array</c>.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    [Serializable]
+    
     public class ArrayGenotype<T> : AbstractListGenotype<T[], T>
         where T : IGenotypeElement
     {

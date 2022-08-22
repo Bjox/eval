@@ -11,7 +11,7 @@ using System;
 
 namespace Eval.Core.Models
 {
-    [Serializable]
+    
     public abstract class Phenotype : IPhenotype
     {
         private double _fitness;

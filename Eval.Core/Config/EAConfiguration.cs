@@ -16,7 +16,7 @@ using Newtonsoft.Json;
 
 namespace Eval.Core.Config
 {
-    [Serializable]
+    
     public class EAConfiguration : IEAConfiguration
     {
         public int PopulationSize { get; set; }
@@ -37,8 +37,6 @@ namespace Eval.Core.Config
         public double RankSelectionMaxProbability { get; set; }
         public bool CalculateStatistics { get; set; } = false;
         public bool MultiThreaded { get; set; } = false;
-        public int SnapshotGenerationInterval { get; set; }
-        public string SnapshotFilename { get; set; }
         public TimeSpan? MaxDuration { get; set; }
 
 

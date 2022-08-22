@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace Eval.Examples
 {
-    [Serializable]
+    
     class OneMaxPhenotype : Phenotype
     {
         private int onecount;
@@ -64,7 +64,7 @@ namespace Eval.Examples
     /// <summary>
     /// Optimizes towards a bitstring containing only ones 
     /// </summary>
-    [Serializable]
+    
     public class OneMaxEA : EA
     {
         private int _bitcount = 50;

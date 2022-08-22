@@ -125,18 +125,6 @@ namespace Eval.Core.Config
         /// </summary>
         bool MultiThreaded { get; }
         /// <summary>
-        /// Number of generations between each snapshot
-        /// 0 or less will deactivate snapshots
-        /// Default value = 0
-        /// </summary>
-        int SnapshotGenerationInterval { get; }
-        /// <summary>
-        /// Snapshot filename/full path to use.
-        /// If this file exists upon evolution start, it will try to resume last state.
-        /// Throws exception on serialization or deserialization failure
-        /// </summary>
-        string SnapshotFilename { get; }
-        /// <summary>
         /// Maximum duration of the evolution.
         /// The evolution will stop at the end of the ongoing generation
         /// when total runtime is greater than this timespan
