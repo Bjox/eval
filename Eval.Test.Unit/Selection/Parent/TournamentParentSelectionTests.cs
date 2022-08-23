@@ -8,6 +8,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Eval.Core.Config;
@@ -26,7 +27,7 @@ namespace Eval.Test.Unit.Selection.Parent
         [TestMethod]
         public void TournamentParentSelection_VerifySelectionProbability()
         {
-            // Test tournament selection by comparing it to the old "established" tournament selection implementation.
+            // Test tournament selection by comparing it to the naive tournament selection implementation.
             var random = new DefaultRandomNumberGenerator("seed".GetHashCode());
             for (int tournamentSize = 2; tournamentSize <= 10; tournamentSize++)
             {
@@ -41,12 +42,10 @@ namespace Eval.Test.Unit.Selection.Parent
                     TournamentProbability = 0.5
                 };
 
-#pragma warning disable CS0618 // Type or member is obsolete
-                var oldselection = new TournamentParentSelectionOld(config);
-#pragma warning restore CS0618 // Type or member is obsolete
-                var oldselected = oldselection.SelectParents(population, 275000, EAMode.MaximizeFitness, random);
+                var naiveSelection = new TournamentParentSelectionNaiveImplementation(config);
+                var naiveSelected = naiveSelection.SelectParents(population, 275000, EAMode.MaximizeFitness, random);
 
-                foreach (var (a, b) in oldselected)
+                foreach (var (a, b) in naiveSelected)
                 {
                     ((TestPhenotype)a).Count2++;
                     ((TestPhenotype)b).Count2++;
@@ -113,14 +112,12 @@ namespace Eval.Test.Unit.Selection.Parent
 
             var watch = new Stopwatch();
             watch.Start();
-#pragma warning disable CS0618 // Type or member is obsolete
-            IParentSelection selection = new TournamentParentSelectionOld(config);
-#pragma warning restore CS0618 // Type or member is obsolete
+            IParentSelection selection = new TournamentParentSelectionNaiveImplementation(config);
             foreach (var selected in selection.SelectParents(pop, popsize, EAMode.MaximizeFitness, random))
             {
             }
             watch.Stop();
-            Console.WriteLine($"old: {watch.ElapsedMilliseconds} ms");
+            Console.WriteLine($"naive: {watch.ElapsedMilliseconds} ms");
 
             watch.Restart();
             selection = new TournamentParentSelection(config);
@@ -137,6 +134,63 @@ namespace Eval.Test.Unit.Selection.Parent
             pmock.SetupGet(p => p.Fitness).Returns(fitnessSetup);
             pmock.SetupGet(p => p.IsEvaluated).Returns(true);
             return pmock;
+        }
+    }
+
+    /// <summary>
+    /// Naive implementation of tournament selection. Used only in tests to compare with other implementations of tournament selection.
+    /// </summary>
+    class TournamentParentSelectionNaiveImplementation : IParentSelection
+    {
+        private readonly int _tournamentSize;
+        private readonly double _prob;
+
+        public TournamentParentSelectionNaiveImplementation(IEAConfiguration configuration)
+        {
+            if (configuration.TournamentSize < 2)
+            {
+                throw new ArgumentException("TournamentSize");
+            }
+            _tournamentSize = configuration.TournamentSize;
+            _prob = configuration.TournamentProbability;
+        }
+
+        public IEnumerable<(IPhenotype, IPhenotype)> SelectParents(Population population, int n, EAMode mode, IRandomNumberGenerator random)
+        {
+            if (!population.IsSorted)
+            {
+                throw new ArgumentException("Population is not sorted");
+            }
+            for (int i = 0; i < n; i++)
+            {
+                yield return (SelectOne(population, mode, random), SelectOne(population, mode, random));
+            }
+        }
+
+        private IPhenotype SelectOne(Population population, EAMode mode, IRandomNumberGenerator random)
+        {
+            List<IPhenotype> pool = new List<IPhenotype>(_tournamentSize);
+            for (int i = 0; i < _tournamentSize; i++)
+            {
+                pool.Add(population.DrawRandom(random));
+            }
+
+            if (random.NextDouble() < _prob)
+            {
+                switch (mode)
+                {
+                    case EAMode.MaximizeFitness:
+                        return pool.Max();
+                    case EAMode.MinimizeFitness:
+                        return pool.Min();
+                    default:
+                        throw new NotImplementedException(mode.ToString());
+                }
+            }
+            else
+            {
+                return pool[random.Next(pool.Count)];
+            }
         }
     }
 }
